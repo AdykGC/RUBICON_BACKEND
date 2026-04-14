@@ -1,49 +1,36 @@
-<?php
+<?php namespace App\Models;
 
-namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+// Backpack
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
+// Spatie
+use Spatie\Permission\Traits\HasRoles;
+// Sanctum
+use Laravel\Sanctum\HasApiTokens;
+// Мягкое удаление
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
-{
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+class User extends Authenticatable {
+    use HasApiTokens, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
+        'company_title',
         'email',
+        'phone',
+        'address',
         'password',
+        'is_active'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'password' => 'hashed',
+        'is_active' => 'boolean'
+    ];
 }

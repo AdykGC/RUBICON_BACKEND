@@ -28,6 +28,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
+    ports:
+      - "3307:3306"
     volumes:
       - laravel_db_data:/var/lib/mysql
 

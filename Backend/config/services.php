@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'bitrix' => [
+        'client_id' => env('BITRIX_CLIENT_ID'),
+        'client_secret' => env('BITRIX_CLIENT_SECRET'),
+        'redirect_uri' => env('BITRIX_REDIRECT_URI'),
+        'portal_domain' => env('BITRIX_PORTAL_DOMAIN'),
+    ],
+
+    'mqtt' => [
+        'host' => env('MQTT_HOST', '127.0.0.1'),
+        'port' => env('MQTT_PORT', 1883),
+    ],
 ];
