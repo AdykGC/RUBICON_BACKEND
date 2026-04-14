@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+Icon*
+
+# IDE
+.idea
+.vscode
+
+# Docker
+docker-compose.override.yml

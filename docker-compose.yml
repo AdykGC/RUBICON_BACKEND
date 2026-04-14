@@ -1,0 +1,41 @@
+services:
+  # Nginx #
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./_Docker/Nginx/conf.d/:/etc/nginx/conf.d/
+      - ./Backend:/var/www/html/backend
+    depends_on:
+      - laravel_php
+    container_name: container-nginx
+
+  # Laravel #
+  laravel_php:
+    build:
+      context: .
+      dockerfile: _Docker/Laravel/Dockerfile
+    volumes:
+      - ./Backend:/var/www/html/backend:cached
+    depends_on:
+      - laravel_db
+    container_name: container-laravel
+
+  # Laravel + MariaDB #
+  laravel_db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+    volumes:
+      - laravel_db_data:/var/lib/mysql
+
+  # Общий Redis
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+volumes:
+  laravel_db_data:
