@@ -1,5 +1,5 @@
 services:
-  # Nginx #
+  # Nginx
   nginx:
     image: nginx:latest
     ports:
@@ -11,8 +11,10 @@ services:
       - laravel_php
     container_name: container-nginx
     restart: unless-stopped
+    networks:
+      - backend_network
 
-  # Laravel #
+  # Laravel
   laravel_php:
     build:
       context: .
@@ -23,8 +25,10 @@ services:
       - laravel_db
     container_name: container-laravel
     restart: unless-stopped
+    networks:
+      - backend_network
 
-  # Laravel + MariaDB #
+  # Laravel + MariaDB
   laravel_db:
     image: mariadb:10.6
     environment:
@@ -34,14 +38,18 @@ services:
       - "3307:3306"
     volumes:
       - laravel_db_data:/var/lib/mysql
+    networks:
+      - backend_network
 
-  # Общий Redis
+  # Redis
   redis:
     image: redis:7
     ports:
       - "6379:6379"
     container_name: container-redis
     restart: unless-stopped
+    networks:
+      - backend_network
 
   # Mosquitto
   mosquitto:
@@ -54,9 +62,15 @@ services:
       - mosquitto_log:/mosquitto/log
     container_name: container-mosquitto
     restart: unless-stopped
+    networks:
+      - backend_network
 
 volumes:
   laravel_db_data:
   mosquitto_data:
   mosquitto_config:
   mosquitto_log:
+
+networks:
+  backend_network:
+    driver: bridge
