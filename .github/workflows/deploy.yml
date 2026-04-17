@@ -19,7 +19,5 @@ jobs:
             cd /var/www/RUBICON_BACKEND
             git pull origin main
             set -e
-            docker compose build
-            docker compose up -d
-            docker exec container-laravel php artisan migrate --force
+            docker compose up -d --build --remove-orphans
             docker image prune -f
