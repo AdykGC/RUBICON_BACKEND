@@ -39,5 +39,18 @@ services:
     ports:
       - "6379:6379"
 
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_config:/mosquitto/config
+      - mosquitto_log:/mosquitto/log
+    container_name: container-mosquitto
+
 volumes:
   laravel_db_data:
+  mosquitto_data:
+  mosquitto_config:
+  mosquitto_log:

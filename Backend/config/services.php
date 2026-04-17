@@ -43,7 +43,7 @@ return [
     ],
 
     'mqtt' => [
-        'host' => env('MQTT_HOST', '127.0.0.1'),
+        'host' => env('MQTT_HOST', 'mosquitto'),
         'port' => env('MQTT_PORT', 1883),
     ],
 ];

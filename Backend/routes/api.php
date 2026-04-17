@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\User\{ GetUserController, UserLoginController, UserRegisterController, UserLogoutController, UserUpdateController };
 use App\Http\Controllers\Product\{ MachineCreateController, MachineListController, MachineUpdateController, MachineDeleteController };
 use App\Http\Controllers\MachineAnalytics\{ getParamsController };
-use App\Http\Controllers\Hardware\{ MqttESPRegController, MqttESPCheckController, MqttCommandController };
+use App\Http\Controllers\Hardware\{ MqttESPRegController, MqttCommandController };
 
 
 use App\Http\Controllers\TestController;
@@ -46,7 +46,18 @@ Route::prefix('analytics')->group(function () {
 });
 
 
+/*
+2. НОВАЯ АРХИТЕКТУРА (MQTT system)
+    Это модель: “сервер управляет устройствами”
+FLOW:
+1. HTTP → Laravel создаёт команду
+2. Laravel → MQTT publish
+3. ESP32 → выполняет
+4. ESP32 → MQTT ACK
+5. Laravel → фиксирует результат
+*/
 
+// https://f6a1-2-72-243-255.ngrok-free.app/api________
 Route::post('/devices/register', MqttESPRegController::class);
-Route::get('/devices/check/{mac}', MqttESPCheckController::class);
 Route::post('/device/command', MqttCommandController::class);
+

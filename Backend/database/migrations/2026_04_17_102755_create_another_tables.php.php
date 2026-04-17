@@ -56,10 +56,21 @@ return new class extends Migration {
             $table->string('name')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('device_commands', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('device_id');
+            $table->string('command_id')->unique();
+            $table->string('action');
+            $table->integer('pulses')->nullable();
+            $table->string('status')->default('pending'); 
+            $table->timestamps();
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('device_commands');
         Schema::dropIfExists('devices');
         Schema::dropIfExists('bitrix_tokens');
         Schema::dropIfExists('sales');

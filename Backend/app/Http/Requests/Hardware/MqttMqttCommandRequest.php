@@ -2,17 +2,15 @@
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MqttESPCheckRequest extends FormRequest {
+class MqttMqttCommandRequest extends FormRequest {
     public function authorize(): bool {
         return true;
     }
     /** * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string> */
     public function rules(): array {
         return [
-            'name' => 'required|string|max:50',
-            'type' => 'required|string|max:50',
-            'location' => 'nullable|string|max:100',
-            'serial_number' => 'nullable|string|max:100',
+            'mac' => 'required|string',
+            'pulses' => 'required|integer|min:1',
         ];
     }
 }
