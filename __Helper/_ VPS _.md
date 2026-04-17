@@ -113,3 +113,9 @@ cat ~/.ssh/id_rsa.pub   (ПУБЛИЧНЫЙ)
 ssh -T git@github.com
 → результат:
     Hi username! You've successfully authenticated
+
+
+
+    Midnight Commander
+sudo apt install mc -y
+mc
