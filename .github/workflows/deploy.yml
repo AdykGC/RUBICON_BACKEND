@@ -20,4 +20,4 @@ jobs:
             git pull origin main
             docker-compose build || exit 1
             docker-compose up -d
-            docker exec laravel php artisan migrate --force
+            docker exec container-laravel php artisan migrate --force
