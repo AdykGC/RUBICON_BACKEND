@@ -17,12 +17,16 @@ done
 echo "[---] Installing dependencies..."
 composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Генерация ключа ТОЛЬКО если нет
+# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+# ENV | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ С EXAMPLE
+if [ ! -f .env ]; then
+  cp .env.example .env
+fi
+# ENV | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СГЕНЕРИРОВАТЬ КЛЮЧ
 if ! grep -q "APP_KEY=base64" .env; then
-  echo "[---] Generating app key..."
   php artisan key:generate --force
 fi
-
+# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 echo "[---] Running migrations..."
 php artisan migrate --force
 

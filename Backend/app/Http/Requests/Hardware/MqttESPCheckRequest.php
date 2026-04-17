@@ -1,4 +1,4 @@
-<?php namespace App\Http\Requests\Product;
+<?php namespace App\Http\Requests\Hardware;
 
 use Illuminate\Foundation\Http\FormRequest;
 

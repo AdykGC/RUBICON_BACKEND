@@ -17,6 +17,7 @@ composer require backpack/crud
 
 # Larastan:
 composer require --dev larastan/larastan:^3.0
+composer require --dev phpstan/phpstan-deprecation-rules
 
 ## Инструмент для Laravel, который помогает находить ошибки в коде до запуска проекта.
     находит баги до запуска сайта
@@ -26,4 +27,15 @@ composer require --dev larastan/larastan:^3.0
 
 # ЗАПУСК
 docker exec -it container-laravel bash
-./vendor/bin/phpstan analyse
+./vendor/bin/phpstan analyse -c phpstan.neon
+
+# Laravel Horizon
+composer require laravel/horizon
+php artisan horizon:install
+
+
+Запуск и развертывание
+Запуск: php artisan horizon
+Остановка: php artisan horizon:terminate
+Для продакшена рекомендуется использовать Supervisor для автоматического перезапуска процесса при сбое. 
+

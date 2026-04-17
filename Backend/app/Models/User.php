@@ -11,6 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 // Мягкое удаление
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $surname
+ */
+
 class User extends Authenticatable {
     use HasApiTokens, Notifiable, HasRoles;
 

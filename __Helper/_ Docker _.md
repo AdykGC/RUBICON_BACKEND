@@ -41,10 +41,8 @@ docker compose build --no-cache
 docker compose up -d
 
     Пересборка кода (БЕЗ скачивания всего заново)
-docker compose down -v
+docker compose down
 docker compose up -d --build
-
-
 
 Проверить сколько мусора:
 docker system df
