@@ -5,6 +5,9 @@ RUN apt-get update && apt-get install -y \
     libpng-dev libzip-dev libicu-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo_mysql mbstring bcmath gd zip intl opcache pcntl
 
+# ✅ FIX TEMP
+RUN mkdir -p /tmp && chmod 777 /tmp
+
 COPY ./_Docker/Laravel/php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN curl -sS https://getcomposer.org/installer | php -- \
