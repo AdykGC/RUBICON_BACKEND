@@ -1,6 +1,6 @@
-<?php namespace App\Http\Controllers\BITRIX;
+<?php namespace App\Http\Controllers\Bitrix24;
 
-use App\Services\BITRIX24\Bitrix24Service;
+use App\Services\Bitrix24\Bitrix24Service;
 
 class BaseController{
     public $service;

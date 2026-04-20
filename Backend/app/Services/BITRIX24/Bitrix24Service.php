@@ -1,45 +1,62 @@
-<?php namespace App\Services\BITRIX24;
+<?php namespace App\Services\Bitrix24;
 
 use Illuminate\Support\Facades\Http;
-use App\Models\BitrixToken;
+use App\Models\BitrixPortal;
+
 
 class Bitrix24Service
 {
-    protected $accessToken;
-    protected $restUrl;
+    protected $portal;
 
-    public function __construct()
+    public function __construct(BitrixPortal $portal)
     {
-        $token = BitrixToken::first();
-        if (!$token) {
-            throw new \Exception('Bitrix токен не найден. Пройдите OAuth авторизацию.');
-        }
-
-        $this->accessToken = $token->access_token;
-        $this->restUrl = rtrim($token->rest_url, '/'); // <-- Убираем слеш на конце
-
-        if (!str_starts_with($this->restUrl, 'http')) {
-            $this->restUrl = 'https://' . $this->restUrl;
-        }
+        $this->portal = $portal;
     }
 
-    /**
-     * Вызов метода Bitrix24 REST API
-     */
     public function call(string $method, array $params = [])
     {
-        $url = $this->restUrl . "/{$method}.json";
+        // Обновляем токен, если срок его жизни истек
+        if (!$this->portal->expires_at || $this->portal->expires_at <= now()) {
+            $this->refreshToken();
+        }
 
+        $url = $this->portal->client_endpoint . $method . '.json';
         $response = Http::asForm()->post($url, array_merge($params, [
-            'auth' => $this->accessToken
+            'auth' => $this->portal->access_token
         ]));
 
         $data = $response->json();
 
-        if (isset($data['error'])) {
-            throw new \Exception("Bitrix API ошибка: {$data['error_description']}");
+        // Если API вернул ошибку об истекшем токене, обновляем и пробуем снова
+        if (isset($data['error']) && $data['error'] === 'expired_token') {
+            $this->refreshToken();
+            return $this->call($method, $params);
         }
 
         return $data;
+    }
+
+    protected function refreshToken()
+    {
+        // Обновление токена через единый OAuth-сервер
+        $response = Http::asForm()->post("https://oauth.bitrix.info/oauth/token/", [
+            'grant_type'    => 'refresh_token',
+            'client_id'     => config('services.bitrix.client_id'),
+            'client_secret' => config('services.bitrix.client_secret'),
+            'refresh_token' => $this->portal->refresh_token,
+        ]);
+
+        $data = $response->json();
+
+        if (isset($data['access_token'])) {
+            $this->portal->update([
+                'access_token' => $data['access_token'],
+                'refresh_token' => $data['refresh_token'],
+                'expires_at' => now()->addSeconds($data['expires_in']),
+            ]);
+            $this->portal->refresh();
+        } else {
+            throw new \Exception('Unable to refresh token: ' . json_encode($data));
+        }
     }
 }

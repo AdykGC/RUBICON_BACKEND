@@ -38,8 +38,6 @@ return [
     'bitrix' => [
         'client_id' => env('BITRIX_CLIENT_ID'),
         'client_secret' => env('BITRIX_CLIENT_SECRET'),
-        'redirect_uri' => env('BITRIX_REDIRECT_URI'),
-        'portal_domain' => env('BITRIX_PORTAL_DOMAIN'),
     ],
 
     'mqtt' => [

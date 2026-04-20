@@ -28,7 +28,8 @@ if ! grep -q "APP_KEY=base64" .env; then
 fi
 # | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 echo "[---] Running migrations..."
-php artisan migrate --force
+# php artisan migrate --force
+php artisan migrate:fresh
 
 echo "[---] Clearing cache..."
 php artisan config:clear

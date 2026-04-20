@@ -40,16 +40,6 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('bitrix_tokens', function (Blueprint $table) {
-            $table->id();
-            $table->text('access_token');
-            $table->text('refresh_token')->nullable();
-            $table->string('domain'); // для совместимости
-            $table->string('portal_url')->nullable(); // для редиректа пользователя
-            $table->string('rest_url')->nullable();   // для REST API вызовов
-            $table->timestamps();
-        });
-
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->string('mac')->unique();
@@ -66,13 +56,13 @@ return new class extends Migration {
             $table->string('status')->default('pending'); 
             $table->timestamps();
         });
+
     }
 
     public function down(): void
     {
         Schema::dropIfExists('device_commands');
         Schema::dropIfExists('devices');
-        Schema::dropIfExists('bitrix_tokens');
         Schema::dropIfExists('sales');
         Schema::dropIfExists('products');
         Schema::dropIfExists('machines');
