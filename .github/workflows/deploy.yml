@@ -16,8 +16,19 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /var/www/RUBICON_BACKEND
-            git pull origin main
             set -e
+            cd /var/www/RUBICON_BACKEND
+
+            echo "== Pull latest code =="
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "== Rebuild containers =="
+            docker compose down
             docker compose up -d --build --remove-orphans
+
+            echo "== Wait containers =="
+            sleep 5
+
+            echo "== Cleanup =="
             docker image prune -f
