@@ -19,6 +19,9 @@ jobs:
             set -e
             cd /var/www/RUBICON_BACKEND
 
+            echo "== Fix permissions =="
+            sudo chown -R $USER:$USER .
+
             echo "== Pull latest code =="
             git fetch origin
             git reset --hard origin/main
