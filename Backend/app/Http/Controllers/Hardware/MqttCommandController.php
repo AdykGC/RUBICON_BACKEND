@@ -19,7 +19,8 @@ class MqttCommandController extends BaseController {
             'pulses' => $request->pulses,
             'status' => 'pending'
         ]);
-        $topic = "device/{$device->mac}";
+        $mac = str_replace(':','',$device->mac);
+        $topic = "device/{$mac}";
         // 2. отправляем MQTT
         $this->service->publish($topic, [
             'command_id' => $command->command_id,
