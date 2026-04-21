@@ -1,48 +1,55 @@
-    ОБНОВЛЕНИЕ СИСТЕМЫ
-sudo apt update && sudo apt upgrade -y
-    УСТАНОВКА DOCKER (ТВОЯ ОСНОВА)
-sudo apt update
-sudo apt install -y ca-certificates curl gnupg
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+<h3 align="center"> КОРОТКО | VPS → чистый сервер → установка Docker </h3>
 
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+ОБНОВЛЕНИЕ СИСТЕМЫ
+
+    sudo apt update && sudo apt upgrade -y
+
+УСТАНОВКА DOCKER (ТВОЯ ОСНОВА)
+
+    sudo apt update
+    sudo apt install -y ca-certificates curl gnupg
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt update
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 ДАЙ ДОСТУП UBUNTU К DOCKER
-sudo usermod -aG docker ubuntu
-newgrp docker
 
-    Включаем автозапуск Docker:
-sudo systemctl enable docker
-sudo systemctl start docker
-    Проверка:
-docker --version
-docker-compose version
+    sudo usermod -aG docker ubuntu
+    newgrp docker
 
+Включаем автозапуск Docker:
 
-    КОРОТКО
-Ты сейчас на этапе:
-VPS → чистый сервер → установка Docker
+    sudo systemctl enable docker
+    sudo systemctl start docker
 
+Проверка:
+    
+    docker --version
+    docker-compose version
 
-    Создаём папку сами:
-sudo mkdir -p /var/www
-    Даём себе доступ:
-sudo chown -R $USER:$USER /var/www
-    ЗАЛИВАЕМ ПРОЕКТ НА VPS
-cd /var/www
+<h3 align="center"> КОРОТКО | VPS → чистый сервер → AUTODEPLOY </h3>
 
+Создаём папку сами:
 
+    sudo mkdir -p /var/www
 
-GitHub Actions (ЛУЧШИЙ вариант)
-    сам подключается к VPS и делает deploy
+Даём себе доступ:
 
-    ШАГ 1 — СОЗДАЙ SSH КЛЮЧ НА VPS
+    sudo chown -R $USER:$USER /var/www
+
+ЗАЛИВАЕМ ПРОЕКТ НА VPS
+
+    cd /var/www
+
+GitHub Actions | сам подключается к VPS и делает deploy
+ШАГ 1 — СОЗДАЙ SSH КЛЮЧ НА VPS
+
 ssh-keygen -t rsa -b 4096 -C "deploy"
     получишь:
 ~/.ssh/id_rsa       (приватный)
