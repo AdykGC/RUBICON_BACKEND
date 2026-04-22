@@ -23,13 +23,6 @@ echo "[---] Installing backend dependencies..."
 composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-# Frontend | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ И СОБРАТЬ
-echo "[---] Installing backend dependencies..."
-npm install
-echo "[---] Building frontend..."
-npm run build
-
-# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 # ENV | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ С EXAMPLE
 if [ ! -f .env ]; then
   cp .env.example .env
