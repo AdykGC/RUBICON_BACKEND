@@ -50,12 +50,15 @@ jobs:
             set -e
             cd /var/www/RUBICON_BACKEND
 
-            echo "== Pull latest code (only docker-compose.yml and configs) =="
+            echo "== Pull latest code =="
             git fetch origin
             git reset --hard origin/main
 
             echo "== Log in to Docker Hub =="
             echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+            echo "== Remove old image to force fresh pull =="
+            docker rmi ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} || true
 
             echo "== Pull fresh image =="
             docker compose pull laravel_php
