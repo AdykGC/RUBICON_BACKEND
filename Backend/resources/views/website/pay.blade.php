@@ -5,133 +5,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Пополнение баланса | Rubicon</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
-
+        
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .loading-spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: white;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0,0,0,0.3);
+            border-top-color: black;
             border-radius: 50%;
-            animation: spin 0.6s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
     </style>
 </head>
-
 <body class="bg-black text-white font-sans relative overflow-hidden flex items-center justify-center min-h-screen p-6">
 
-<div class="fixed inset-0 z-0 pointer-events-none">
-    <div class="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-green-500/10 rounded-full blur-[100px]"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]"></div>
-</div>
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-green-500/10 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]"></div>
+    </div>
 
-<div class="relative z-10 w-full max-w-md bg-gray-900/40 border border-gray-800 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
-    
-    <div class="mb-8 text-center">
-        <h1 class="text-2xl font-bold">Пополнение баланса</h1>
-        <p class="text-gray-400 text-sm mt-2">
-            Автомат: 
-            <span id="machine-display" class="text-green-400 font-mono">
-                {{ $machineId ?? 'RUB-795211' }}
-            </span>
+    <div class="relative z-10 w-full max-w-md bg-gray-900/40 border border-gray-800 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
+        
+        <div class="mb-8 text-center">
+            <h1 class="text-2xl font-bold tracking-tight">Пополнение баланса</h1>
+            <p class="text-gray-400 text-sm mt-2">
+                Автомат: <span id="machine-display" class="text-green-400 font-mono">{{ $machineId }}</span>
+            </p>
+        </div>
+
+        <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-5 mb-6 flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Ваш баланс</p>
+                <p class="text-2xl font-bold mt-1">0 <span class="text-sm font-normal text-gray-400">тг</span></p>
+            </div>
+            <div class="h-10 w-10 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-xl">
+                💳
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-3 block">Сумма к оплате</label>
+            <div class="relative">
+                <input 
+                    id="amount-input"
+                    type="number" 
+                    placeholder="0.00" 
+                    class="w-full bg-gray-800/60 border border-gray-700 rounded-2xl py-4 px-6 text-2xl font-bold focus:outline-none focus:border-green-500/50 transition-all text-white placeholder-gray-600"
+                />
+                <span class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₸</span>
+            </div>
+        </div>
+
+        <div id="presets-container" class="grid grid-cols-4 gap-3 mb-8"></div>
+
+        <button 
+            id="pay-button"
+            onclick="processPayment()"
+            disabled
+            class="w-full py-4 bg-green-500 hover:bg-green-600 disabled:bg-gray-800 disabled:text-gray-600 text-black font-bold rounded-2xl transition-all duration-300 transform active:scale-[0.98] shadow-lg shadow-green-500/20 relative flex justify-center items-center gap-2"
+        >
+            <span id="btn-text">Оплатить через <span class="font-extrabold uppercase tracking-tighter">Kaspi QR</span></span>
+            <div id="btn-loader" class="hidden loading-spinner"></div>
+        </button>
+
+        <p class="text-center text-[10px] text-gray-500 mt-6 uppercase tracking-widest">
+            Powered by <span class="text-gray-300 font-bold">Rubicon IoT</span>
         </p>
     </div>
 
-    <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-5 mb-6 flex justify-between items-center">
-        <div>
-            <p class="text-xs text-gray-400 uppercase">Ваш баланс</p>
-            <p class="text-2xl font-bold mt-1">0 <span class="text-sm text-gray-400">тг</span></p>
-        </div>
-        <div class="h-10 w-10 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-xl">
-            💳
-        </div>
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-600 text-xs">
+        Secure end-to-end encryption
     </div>
 
-    <div class="mb-6">
-        <label class="text-xs text-gray-400 uppercase mb-3 block">Сумма к оплате</label>
-        <div class="relative">
-            <input 
-                id="amount-input"
-                type="number" 
-                placeholder="0.00" 
-                class="w-full bg-gray-800/60 border border-gray-700 rounded-2xl py-4 px-6 text-2xl font-bold focus:outline-none focus:border-green-500/50 text-white"
-            />
-            <span class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500">₸</span>
-        </div>
-    </div>
+    <script>
+        const amountInput = document.getElementById('amount-input');
+        const payButton = document.getElementById('pay-button');
+        const machineDisplay = document.getElementById('machine-display');
+        const presetsContainer = document.getElementById('presets-container');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
 
-    <div id="presets-container" class="grid grid-cols-4 gap-3 mb-8"></div>
+        const presets = [5, 10, 15, 20, 50, 100, 150, 200];
+        let machineId = '{{ $machineId }}';
 
-    <button 
-        id="pay-button"
-        onclick="processPayment()"
-        disabled
-        class="w-full py-4 bg-green-500 hover:bg-green-600 disabled:bg-gray-800 disabled:text-gray-600 text-black font-bold rounded-2xl transition flex justify-center items-center gap-2"
-    >
-        <span id="btn-text">Оплатить через Kaspi QR</span>
-        <div id="btn-loader" class="hidden loading-spinner"></div>
-    </button>
+        window.onload = () => {
+            machineDisplay.innerText = machineId;
+            renderPresets();
+        };
 
-</div>
+        function renderPresets() {
+            presetsContainer.innerHTML = presets.map(val => `
+                <button 
+                    onclick="setAmount(${val})"
+                    class="preset-btn py-3 px-2 rounded-xl border border-gray-700 bg-gray-800/40 text-gray-300 hover:border-gray-500 transition-all text-sm font-medium"
+                    data-value="${val}"
+                >
+                    ${val} ₸
+                </button>
+            `).join('');
+        }
 
-<script>
-    const amountInput = document.getElementById('amount-input');
-    const payButton = document.getElementById('pay-button');
-    const presetsContainer = document.getElementById('presets-container');
-    const btnText = document.getElementById('btn-text');
-    const btnLoader = document.getElementById('btn-loader');
+        function setAmount(val) {
+            amountInput.value = val;
+            updateUI();
+        }
 
-    let machineId = @json($machineId ?? 'RUB-795211');
+        amountInput.addEventListener('input', updateUI);
 
-    const presets = [5, 10, 15, 20, 50, 100, 150, 200];
+        function updateUI() {
+            const val = parseInt(amountInput.value);
+            payButton.disabled = !val || val <= 0;
 
-    window.onload = () => {
-        renderPresets();
-    };
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                if (parseInt(btn.dataset.value) === val) {
+                    btn.classList.add('bg-green-500', 'border-green-500', 'text-black', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                    btn.classList.remove('bg-gray-800/40', 'text-gray-300');
+                } else {
+                    btn.classList.remove('bg-green-500', 'border-green-500', 'text-black', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                    btn.classList.add('bg-gray-800/40', 'text-gray-300');
+                }
+            });
+        }
 
-    function renderPresets() {
-        presetsContainer.innerHTML = presets.map(val => `
-            <button onclick="setAmount(${val})"
-                class="preset-btn py-3 rounded-xl border border-gray-700 bg-gray-800/40 text-gray-300">
-                ${val} ₸
-            </button>
-        `).join('');
-    }
+        async function processPayment() {
+            const amount = amountInput.value;
+            
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            payButton.disabled = true;
 
-    function setAmount(val) {
-        amountInput.value = val;
-        updateUI();
-    }
-
-    amountInput.addEventListener('input', updateUI);
-
-    function updateUI() {
-        const val = parseInt(amountInput.value);
-        payButton.disabled = !val || val <= 0;
-    }
-
-    function processPayment() {
-        const amount = amountInput.value;
-
-        btnText.classList.add('hidden');
-        btnLoader.classList.remove('hidden');
-        payButton.disabled = true;
-
-        setTimeout(() => {
-            btnText.classList.remove('hidden');
-            btnLoader.classList.add('hidden');
-            payButton.disabled = false;
-
-            alert(`Оплата ${amount} ₸ → ${machineId}`);
-        }, 1500);
-    }
-</script>
-
+            // Эмуляция запроса к бэкенду (замените на реальный API)
+            setTimeout(() => {
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                payButton.disabled = false;
+                
+                alert(`Симуляция: Запрос на ${amount} ₸ отправлен на автомат ${machineId}`);
+                // При желании: window.location.href = '{{ url("/") }}';
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
