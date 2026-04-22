@@ -6,10 +6,39 @@ on:
   push:
     branches: [ "main" ]
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+env:
+  DOCKER_IMAGE: adilkhan097/rubicon-backend
+  DOCKER_TAG: latest
 
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push Laravel image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: _Docker/Laravel/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -21,24 +50,18 @@ jobs:
             set -e
             cd /var/www/RUBICON_BACKEND
 
-
-            echo "== Fix permissions =="
-            sudo chown -R $USER:$USER .
-
-
-            echo "== Pull latest code =="
+            echo "== Pull latest code (only docker-compose.yml and configs) =="
             git fetch origin
             git reset --hard origin/main
 
+            echo "== Log in to Docker Hub =="
+            echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-            echo "== Rebuild containers =="
-            docker compose down
-            docker compose up -d --build --remove-orphans
+            echo "== Pull fresh image =="
+            docker compose pull laravel_php
 
+            echo "== Recreate containers =="
+            docker compose up -d --remove-orphans
 
-            echo "== Wait containers =="
-            sleep 5
-
-
-            echo "== Cleanup | Удалять образы старше 24 часов == "
+            echo "== Cleanup old images =="
             docker image prune -f --filter "until=24h"
