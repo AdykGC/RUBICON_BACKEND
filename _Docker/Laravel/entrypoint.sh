@@ -3,9 +3,7 @@
 #!/bin/bash
 
 set -e
-
 echo "[---] Waiting for DB..."
-
 until php -r "
 try {
     new PDO('mysql:host=laravel_db;port=3306;dbname=laravel', 'root', 'root');
@@ -17,21 +15,17 @@ try {
   sleep 2
 done
 
-# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-# Backend | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ И СОБРАТЬ
-echo "[---] Installing backend dependencies..."
-composer install --no-interaction --prefer-dist --optimize-autoloader
+# composer install УДАЛЁН — зависимости уже в образе
+# composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-# ENV | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ С EXAMPLE
 if [ ! -f .env ]; then
   cp .env.example .env
 fi
-# ENV | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СГЕНЕРИРОВАТЬ КЛЮЧ
 if ! grep -q "APP_KEY=base64" .env; then
   php artisan key:generate --force
 fi
-# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+
+# Миграции и кеш
 echo "[---] Running migrations..."
 php artisan migrate --force
 

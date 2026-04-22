@@ -40,5 +40,5 @@ jobs:
             sleep 5
 
 
-            echo "== Cleanup =="
-            docker image prune -f
+            echo "== Cleanup | Удалять образы старше 24 часов == "
+            docker image prune -f --filter "until=24h"

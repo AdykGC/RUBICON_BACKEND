@@ -22,7 +22,11 @@ services:
       context: .
       dockerfile: _Docker/Laravel/Dockerfile
     volumes:
-      - ./Backend:/var/www/html/backend:cached
+    # Убираем volume, который монтировал ./Backend — код теперь внутри образа
+    #  - ./Backend:/var/www/html/backend:cached
+    # Если вам нужно, чтобы некоторые папки (например, storage, public/uploads) сохраняли данные между перезапусками — оставьте volume только для них:
+      - ./Backend/storage:/var/www/html/backend/storage
+      - ./Backend/public/uploads:/var/www/html/backend/public/uploads
     depends_on:
       - laravel_db
     container_name: container-laravel
