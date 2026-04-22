@@ -5,8 +5,7 @@ FROM php:8.4-fpm
 RUN apt-get update && apt-get install -y \
     git zip unzip curl \
     libpng-dev libzip-dev libicu-dev libonig-dev libxml2-dev \
-    nodejs npm && \
-    docker-php-ext-install pdo_mysql mbstring bcmath gd zip intl opcache pcntl
+    && docker-php-ext-install pdo_mysql mbstring bcmath gd zip intl opcache pcntl
 
 # ✅ FIX TEMP
 RUN mkdir -p /tmp && chmod 777 /tmp
