@@ -4,7 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Bitrix24\{ InstallController, DashboardController, };
 use App\Http\Middleware\VerifyBitrixSignature;
 
-Route::get('/', function () { return view('welcome'); });
+use Illuminate\Http\Request;
+#Route::get('/', function () { return view('welcome'); });
+Route::get('/', function () { return view('website.rubicon'); });
+Route::get('/product', function () { return view('website.product'); });
+Route::get('/pay', function (Request $request) { return view('pay', [ 'machineId' => $request->get('id', 'RUB-795211') ]); });
+
+
 
 Route::post('/bitrix/install', InstallController::class)->name('bitrix.install');
 Route::post('/bitrix/uninstall', [InstallController::class, 'uninstall']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
