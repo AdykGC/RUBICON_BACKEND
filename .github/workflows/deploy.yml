@@ -1,3 +1,5 @@
+# .github/workflows/deploy.yml
+
 name: Deploy
 
 on:
@@ -19,19 +21,24 @@ jobs:
             set -e
             cd /var/www/RUBICON_BACKEND
 
+
             echo "== Fix permissions =="
             sudo chown -R $USER:$USER .
+
 
             echo "== Pull latest code =="
             git fetch origin
             git reset --hard origin/main
 
+
             echo "== Rebuild containers =="
             docker compose down
             docker compose up -d --build --remove-orphans
 
+
             echo "== Wait containers =="
             sleep 5
+
 
             echo "== Cleanup =="
             docker image prune -f

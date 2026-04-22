@@ -1,3 +1,5 @@
+# _Docker/Laravel/entrypoint.sh
+
 #!/bin/bash
 
 set -e
@@ -14,8 +16,18 @@ try {
 "; do
   sleep 2
 done
-echo "[---] Installing dependencies..."
+
+# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+# Backend | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ И СОБРАТЬ
+echo "[---] Installing backend dependencies..."
 composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+# Frontend | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ И СОБРАТЬ
+echo "[---] Installing backend dependencies..."
+npm install
+echo "[---] Building frontend..."
+npm run build
 
 # | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 # ENV | ПРОВЕРИТЬ НАЛИЧИЕ | ЕСЛИ НЕТ ТО СОЗДАТЬ С EXAMPLE

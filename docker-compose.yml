@@ -1,3 +1,5 @@
+# docker-compose.yml
+
 services:
   # Nginx
   nginx:
@@ -7,6 +9,7 @@ services:
     volumes:
       - ./_Docker/Nginx/conf.d/:/etc/nginx/conf.d/
       - ./Backend:/var/www/html/backend
+      - ./Backend/public:/var/www/html/public:ro  # Добавляем публичную папку с билдом фронтенда
     depends_on:
       - laravel_php
     container_name: container-nginx
