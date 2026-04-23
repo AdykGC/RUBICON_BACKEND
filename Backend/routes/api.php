@@ -6,7 +6,6 @@ use App\Http\Controllers\User\{ GetUserController, UserLoginController, UserRegi
 use App\Http\Controllers\Product\{ MachineCreateController, MachineListController, MachineUpdateController, MachineDeleteController };
 use App\Http\Controllers\MachineAnalytics\{ getParamsController };
 use App\Http\Controllers\Hardware\{ MqttESPRegController, MqttCommandController };
-use App\Http\Controllers\{ PaymentController, };
 
 
 use App\Http\Controllers\TestController;
@@ -45,9 +44,6 @@ Route::prefix('analytics')->group(function () {
         //Route::post('/delete/{id}',                         MachineDeleteController::class);
     });
 });
-
-Route::get('/machine/{id}/balance', [PaymentController::class, 'getBalance']);
-Route::post('/machine/topup', [PaymentController::class, 'topUp']);
 
 
 /*

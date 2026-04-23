@@ -104,7 +104,7 @@
         // Получение текущего баланса с сервера
         async function fetchBalance() {
             try {
-                const response = await fetch(`/api/machine/${machineId}/balance`);
+                const response = await fetch(`/machine/balance/${machineId}`);
                 if (response.ok) {
                     const data = await response.json();
                     currentBalance = data.balance;
@@ -167,14 +167,14 @@
             payButton.disabled = true;
 
             try {
-                const response = await fetch('/api/machine/topup', {
+                const response = await fetch('/machine/topup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: JSON.stringify({
-                        machine_id: machineId,
+                        serial_number: machineId,
                         amount: amount
                     })
                 });
