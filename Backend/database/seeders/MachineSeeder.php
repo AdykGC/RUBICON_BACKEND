@@ -34,6 +34,8 @@ class MachineSeeder extends Seeder
             ]
         );
 
-        Machine::factory(5)->create(['user_id' => $user->id]);
+        if (Machine::count() < 6) {
+            Machine::factory(5)->create(['user_id' => $user->id]);
+        }
     }
 }

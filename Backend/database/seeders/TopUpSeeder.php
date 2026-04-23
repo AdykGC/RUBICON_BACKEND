@@ -11,7 +11,8 @@ class TopUpSeeder extends Seeder
     public function run(): void
     {
         $machine = Machine::where('serial_number', 'RUB-795211')->first();
-        if ($machine) {
+        $topUpExists = TopUp::where('transaction_id', 'TEST_001')->exists();
+        if (!$topUpExists && $machine) {
             TopUp::create([
                 'machine_id' => $machine->id,
                 'amount' => 500,

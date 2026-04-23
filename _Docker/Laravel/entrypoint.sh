@@ -29,6 +29,14 @@ fi
 echo "[---] Running migrations..."
 php artisan migrate --force
 
+# Проверяем через переменную окружения (безопаснее)
+if [ "$RUN_SEED" = "true" ]; then
+    echo "[---] Seeding database (RUN_SEED=true)..."
+    php artisan db:seed --force
+else
+    echo "[---] Skipping seeders (set RUN_SEED=true to enable)."
+fi
+
 echo "[---] Clearing cache..."
 php artisan config:clear
 php artisan cache:clear

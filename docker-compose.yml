@@ -32,6 +32,8 @@ services:
       - laravel_db
     container_name: container-laravel
     restart: unless-stopped
+    environment:
+      - RUN_SEED=true
     networks:
       - backend_network
 
