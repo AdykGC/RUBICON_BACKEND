@@ -2,7 +2,10 @@
 
 use PhpMqtt\Client\MqttClient;
 use PhpMqtt\Client\ConnectionSettings;
-
+use App\Models\TopUp;
+use App\Models\DeviceCommand;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MqttService {
 
@@ -50,6 +53,50 @@ class MqttService {
         } finally {
             /*      Laravel отключается       */
             $client->disconnect();
+        }
+    }
+
+
+
+    // Cоздаём команду
+    public function create_command($machine, $pulses, $device, $amount){
+        DB::beginTransaction();
+        try{
+            // 1. Запись пополнения
+            $topUp = TopUp::create([
+                'machine_id'     => $machine->id,
+                'amount'         => $amount,
+                'status'         => 'Completed',
+                'transaction_id' => 'KASPI_' . Str::uuid(),
+            ]);
+            // 2. Увеличиваем баланс автомата
+            $machine->increment('balance', $amount);
+            // 3 (опционально) записать продажу
+            // Sale::create([...]);
+            // 4. Формируем MQTT команду
+            $command = DeviceCommand::create([
+                'device_id'  => $device->id,
+                'command_id' => Str::uuid(),
+                'action'     => 'water',
+                'pulses'     => $pulses,
+                'status'     => 'pending',
+            ]);
+            // 5. Отправляем через MQTT
+            $macNoColons = str_replace(':', '', $device->mac);
+            $topic = "device/{$macNoColons}";
+            $this->publish($topic, [ 'command_id' => $command->command_id, 'action' => 'water', 'pulses' => $pulses, ]);
+            // 6. отмечаем как sent
+            $command->update(['status' => 'sent']);
+            DB::commit();
+
+            return response()->json([
+                'status' => 'sent',
+                'command_id' => $command->command_id,
+                'pulses' => $pulses,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Ошибка: ' . $e->getMessage()], 500);
         }
     }
 }

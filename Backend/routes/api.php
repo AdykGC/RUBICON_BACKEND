@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\User\{ GetUserController, UserLoginController, UserRegisterController, UserLogoutController, UserUpdateController };
 use App\Http\Controllers\Product\{ MachineCreateController, MachineListController, MachineUpdateController, MachineDeleteController };
 use App\Http\Controllers\MachineAnalytics\{ getParamsController };
-use App\Http\Controllers\Hardware\{ MqttESPRegController, MqttCommandController };
+use App\Http\Controllers\Hardware\{ MqttESPRegController, };
 
 
 use App\Http\Controllers\TestController;
@@ -57,7 +57,6 @@ FLOW:
 5. Laravel → фиксирует результат
 */
 
-// https://f6a1-2-72-243-255.ngrok-free.app/api________
-Route::post('/devices/register', MqttESPRegController::class);
-Route::post('/device/command', MqttCommandController::class);
 
+Route::post('/devices/register', MqttESPRegController::class);
+// Route::post('/device/command', MqttCommandController::class);

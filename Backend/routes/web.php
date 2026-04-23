@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Bitrix24\{ InstallController, DashboardController, };
 use App\Http\Middleware\VerifyBitrixSignature;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Hardware\MqttCommandController;
 
 
 use Illuminate\Http\Request;
@@ -24,4 +25,4 @@ Route::get('/bitrix/dashboard', DashboardController::class)->name('bitrix.dashbo
 
 // (методы работают с serial_number)
 Route::get('/machine/balance/{serialNumber}', [PaymentController::class, 'getBalanceBySerial']);
-Route::post('/machine/topup', [PaymentController::class, 'topUpBySerial']);
+Route::post('/machine/topup', MqttCommandController::class);
