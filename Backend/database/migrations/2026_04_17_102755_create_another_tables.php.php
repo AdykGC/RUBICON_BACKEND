@@ -19,7 +19,20 @@ return new class extends Migration {
             $table->decimal('price_adjustment', 10, 2)->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
+
+            $table->decimal('balance', 12, 2)->default(0)->after('is_active');
+
             $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+
+        // Создаём таблицу пополнений
+        Schema::create('top_ups', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('machine_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount', 12, 2);
+            $table->string('status')->default('pending'); // pending, completed, failed
+            $table->string('transaction_id')->nullable(); // ID от Kaspi
             $table->timestamps();
         });
 
@@ -65,6 +78,7 @@ return new class extends Migration {
         Schema::dropIfExists('devices');
         Schema::dropIfExists('sales');
         Schema::dropIfExists('products');
+        Schema::dropIfExists('top_ups');
         Schema::dropIfExists('machines');
     }
 };

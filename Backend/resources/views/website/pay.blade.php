@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Пополнение баланса | Rubicon</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -18,6 +19,9 @@
             border-top-color: black;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+        }
+        .toast {
+            transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -39,8 +43,11 @@
 
         <div class="bg-gray-800/40 border border-gray-700/50 rounded-2xl p-5 mb-6 flex justify-between items-center">
             <div>
-                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Ваш баланс</p>
-                <p class="text-2xl font-bold mt-1">0 <span class="text-sm font-normal text-gray-400">тг</span></p>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Баланс автомата</p>
+                <p class="text-2xl font-bold mt-1">
+                    <span id="current-balance">0</span> 
+                    <span class="text-sm font-normal text-gray-400">тг</span>
+                </p>
             </div>
             <div class="h-10 w-10 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-xl">
                 💳
@@ -48,7 +55,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-3 block">Сумма к оплате</label>
+            <label class="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-3 block">Сумма пополнения</label>
             <div class="relative">
                 <input 
                     id="amount-input"
@@ -88,13 +95,32 @@
         const presetsContainer = document.getElementById('presets-container');
         const btnText = document.getElementById('btn-text');
         const btnLoader = document.getElementById('btn-loader');
+        const balanceSpan = document.getElementById('current-balance');
 
         const presets = [5, 10, 15, 20, 50, 100, 150, 200];
         let machineId = '{{ $machineId }}';
+        let currentBalance = 0;
+
+        // Получение текущего баланса с сервера
+        async function fetchBalance() {
+            try {
+                const response = await fetch(`/api/machine/${machineId}/balance`);
+                if (response.ok) {
+                    const data = await response.json();
+                    currentBalance = data.balance;
+                    balanceSpan.innerText = currentBalance.toFixed(2);
+                } else {
+                    console.error('Ошибка загрузки баланса');
+                }
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+            }
+        }
 
         window.onload = () => {
             machineDisplay.innerText = machineId;
             renderPresets();
+            fetchBalance(); // загружаем баланс при старте
         };
 
         function renderPresets() {
@@ -133,20 +159,47 @@
 
         async function processPayment() {
             const amount = amountInput.value;
-            
+            if (!amount || amount <= 0) return;
+
+            // Показываем лоадер
             btnText.classList.add('hidden');
             btnLoader.classList.remove('hidden');
             payButton.disabled = true;
 
-            // Эмуляция запроса к бэкенду (замените на реальный API)
-            setTimeout(() => {
+            try {
+                const response = await fetch('/api/machine/topup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        machine_id: machineId,
+                        amount: amount
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Обновляем отображаемый баланс
+                    currentBalance = data.new_balance;
+                    balanceSpan.innerText = currentBalance.toFixed(2);
+                    alert(`✅ Баланс успешно пополнен на ${amount} ₸. Новый баланс: ${currentBalance} ₸`);
+                    amountInput.value = '';
+                    updateUI();
+                } else {
+                    alert(`❌ Ошибка: ${data.error || 'Не удалось пополнить баланс'}`);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('❌ Произошла ошибка соединения. Попробуйте позже.');
+            } finally {
+                // Скрываем лоадер
                 btnText.classList.remove('hidden');
                 btnLoader.classList.add('hidden');
                 payButton.disabled = false;
-                
-                alert(`Симуляция: Запрос на ${amount} ₸ отправлен на автомат ${machineId}`);
-                // При желании: window.location.href = '{{ url("/") }}';
-            }, 2000);
+            }
         }
     </script>
 </body>
