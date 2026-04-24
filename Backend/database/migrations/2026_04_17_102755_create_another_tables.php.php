@@ -21,7 +21,8 @@ return new class extends Migration {
             $table->decimal('longitude', 10, 7)->nullable();
 
             $table->decimal('balance', 12, 2)->default(0);
-
+            
+            $table->string('qr_code')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

@@ -28,6 +28,9 @@ Route::prefix('auth')->group(function () {
         Route::patch('/update',                             UserUpdateController::class);
     });
 });
+
+
+
 Route::prefix('machines')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/create',                              MachineCreateController::class);
@@ -36,6 +39,8 @@ Route::prefix('machines')->group(function () {
         Route::post('/delete/{id}',                         MachineDeleteController::class);
     });
 });
+
+
 Route::prefix('analytics')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/machine/{machine}',                                  getParamsController::class);
