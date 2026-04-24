@@ -21,7 +21,6 @@ class MachineUpdateRequest extends FormRequest {
             'latitude' => 'sometimes|nullable|numeric|between:-90,90',
             'longitude' => 'sometimes|nullable|numeric|between:-180,180',
             'is_active' => 'sometimes|boolean',
-            'qr_code' => 'sometimes|nullable|string|max:100',
         ];
     }
 }

@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'admin@rubicon.com',
                 'phone' => '+7 777 777 77 77',
                 'address' => 'Almaty, Kazakhstan',
-                'password' => Hash::make('password'),
+                'password' => 'Password1',
                 'is_active' => true,
             ]);
         }

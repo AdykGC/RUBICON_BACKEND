@@ -18,7 +18,8 @@ class Machine extends Model {
         'price_adjustment',
         'latitude',
         'longitude',
-        'is_active'
+        'is_active',
+        'qr_code'
     ];
 
     // Связь с пользователем

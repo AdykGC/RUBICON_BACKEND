@@ -13,7 +13,16 @@ class MachineUpdateController extends BaseController{
         try {
             $machine = Machine::where('user_id', Auth::id())->findOrFail($id);
 
+            // 1. обновляем данные
             $machine->update($request->validated());
+            // 2. обновляем qr_code (после обновления serial_number)
+            if ($machine->serial_number) {
+                $machine->qr_code = "http://213.155.20.92/pay?id=" . $machine->serial_number;
+            } else {
+                $machine->qr_code = null;
+            }
+            $machine->save();
+
             $machine->refresh();
 
             return $this->success(
