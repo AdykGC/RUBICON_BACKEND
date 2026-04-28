@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TopUp extends Model
+class Transaction extends Model
 {
     use HasFactory;
 
@@ -17,8 +17,7 @@ class TopUp extends Model
     ];
 
     // Связь с машиной
-    public function machine()
-    {
+    public function machine() {
         return $this->belongsTo(Machine::class);
     }
 }

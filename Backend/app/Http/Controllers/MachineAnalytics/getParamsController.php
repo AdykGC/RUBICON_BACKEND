@@ -20,11 +20,7 @@ public function __invoke(Request $request, $machineId)
         }
 
         try {
-            $data = $this->service->getAnalytics(
-                $machineId,
-                $request->start,
-                $request->end
-            );
+            $data = $this->service->getAnalytics( );
             return $this->success($data, 'Аналитика успешно получена');
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 500);

@@ -13,7 +13,7 @@ class MachineUpdateRequest extends FormRequest {
             'name' => 'sometimes|string|max:50',
             'type' => 'sometimes|string|max:50',
             'location' => 'sometimes|string|max:100',
-            'serial_number' => 'sometimes|string|max:100',
+            'mac_address' => 'nullable|string|max:50',
 
             'connection_type' => 'sometimes|nullable|string|max:50',
             'install_price' => 'sometimes|nullable|numeric|min:0',

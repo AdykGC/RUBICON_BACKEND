@@ -12,7 +12,7 @@ class MachineCreateRequest extends FormRequest {
             'name' => 'required|string|max:50',
             'type' => 'required|string|max:50',
             'location' => 'nullable|string|max:100',
-            'serial_number' => 'nullable|string|max:100',
+            'mac_address' => 'nullable|string|max:50',
         ];
     }
 }

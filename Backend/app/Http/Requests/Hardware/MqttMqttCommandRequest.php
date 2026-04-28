@@ -9,7 +9,7 @@ class MqttMqttCommandRequest extends FormRequest {
     /** * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string> */
     public function rules(): array {
         return [
-            'serial_number' => 'required|string|exists:machines,serial_number',
+            'mac_address' => 'required|string|exists:machines,mac_address',
             'amount' => 'required|numeric|min:5',
             //'mac' => 'required|string',
             //'pulses' => 'required|integer|min:1',

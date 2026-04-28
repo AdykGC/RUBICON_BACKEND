@@ -9,10 +9,8 @@ class MqttListenCommand extends Command
 {
     protected $signature = 'mqtt:listen';
 
-    public function handle()
-    {
+    public function handle() {
         $client = new MqttClient( config('services.mqtt.host'), config('services.mqtt.port'), 'laravel-listener');
-
         $client->connect();
 
         $client->subscribe('device/+/ack', function ($topic, $message) {

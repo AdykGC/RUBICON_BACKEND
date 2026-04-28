@@ -5,10 +5,13 @@ use Illuminate\Database\Eloquent\Model;
 class DeviceCommand extends Model
 {
     protected $fillable = [
-        'device_id',
+        'mac_address',
         'command_id',
         'action',
         'pulses',
         'status'
     ];
+    public function machine() {
+        return $this->belongsTo(Machine::class, 'mac_address', 'mac_address');
+    }
 }

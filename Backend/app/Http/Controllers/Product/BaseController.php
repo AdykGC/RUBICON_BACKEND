@@ -8,7 +8,8 @@ class BaseController{
         $this->service = $service;
     }
 
-    /* Успешный ответ */
+    /* 
+    Успешный ответ
     protected function success($data = null, string $message = '', int $code = 200) {
         return response()->json([
             'success' => true,
@@ -16,7 +17,7 @@ class BaseController{
             'data' => $data
         ], $code);
     }
-    /* Ошибка */
+    Ошибка
     protected function error(string $message = '', int $code = 400, $errors = null) {
         return response()->json([
             'success' => false,
@@ -24,4 +25,5 @@ class BaseController{
             'errors' => $errors
         ], $code);
     }
+    */
 }

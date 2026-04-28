@@ -8,11 +8,7 @@ class MachineListController extends BaseController{
 
 
     public function __invoke() {
-        try {
-            $data = $this->service->index();
-            return $this->success($data, 'Машины успешно получены');
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), 500);
-        }
+        $data = $this->service->index();
+        return $data;
     }
 }

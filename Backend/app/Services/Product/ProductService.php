@@ -9,9 +9,9 @@ use App\Models\{
 class ProductService {
     public function create($request){
         try {
-            $data = Machine::create([ 'name' => $request->name, 'type' => $request->type, 'location' => $request->location, 'serial_number' => $request->serial_number, 'user_id' => auth()->id(),]);
+            $data = Machine::create([ 'name' => $request->name, 'type' => $request->type, 'location' => $request->location, 'mac_address' => $request->mac_address, 'user_id' => auth()->id(),]);
             return [
-                'machine' => $data, 
+                'machine' => $data,
             ];
         } catch (\Exception $e) {
             throw new \Exception('Ошибка при создании машины: ' . $e->getMessage());

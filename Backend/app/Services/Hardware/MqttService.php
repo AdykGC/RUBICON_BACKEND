@@ -2,7 +2,7 @@
 
 use PhpMqtt\Client\MqttClient;
 use PhpMqtt\Client\ConnectionSettings;
-use App\Models\TopUp;
+use App\Models\Transaction;
 use App\Models\DeviceCommand;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -59,14 +59,14 @@ class MqttService {
 
 
     // Cоздаём команду
-    public function create_command($machine, $pulses, $device, $amount){
+    public function create_command($machine, $pulses, $amount){
         DB::beginTransaction();
         try{
             // 1. Запись пополнения
-            $topUp = TopUp::create([
+            $topUp = Transaction::create([
                 'machine_id'     => $machine->id,
                 'amount'         => $amount,
-                'status'         => 'Completed',
+                'status'         => 'completed',
                 'transaction_id' => 'KASPI_' . Str::uuid(),
             ]);
             // 2. Увеличиваем баланс автомата
@@ -75,14 +75,14 @@ class MqttService {
             // Sale::create([...]);
             // 4. Формируем MQTT команду
             $command = DeviceCommand::create([
-                'device_id'  => $device->id,
+                'mac_address'  => $machine->mac_address,
                 'command_id' => Str::uuid(),
                 'action'     => 'water',
                 'pulses'     => $pulses,
                 'status'     => 'pending',
             ]);
             // 5. Отправляем через MQTT
-            $macNoColons = str_replace(':', '', $device->mac);
+            $macNoColons = str_replace(':', '', $machine->mac_address,);
             $topic = "device/{$macNoColons}";
             $this->publish($topic, [ 'command_id' => $command->command_id, 'action' => 'water', 'pulses' => $pulses, ]);
             // 6. отмечаем как sent

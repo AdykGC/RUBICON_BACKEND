@@ -10,11 +10,11 @@ class MachineDeleteController extends BaseController {
         try {
             $machine = Machine::where('user_id', Auth::id())->findOrFail($id);
             $machine->delete();
-            return $this->success( null, 'Машина успешно удалена' );
+            return 'Машина успешно удалена';
         } catch (ModelNotFoundException $e) {
-            return $this->error('Машина не найдена', 404);
+            return 'Машина не найдена';
         } catch (\Exception $e) {
-            return $this->error($e->getMessage(), 500);
+            return $e->getMessage();
         }
     }
 }
