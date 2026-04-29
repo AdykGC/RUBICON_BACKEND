@@ -45,7 +45,7 @@ Route::prefix('machines')->group(function () {
 
 Route::prefix('analytics')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/machine/{machine}',                                  getParamsController::class);
+        Route::get('/machine/{machineId}',                                  getParamsController::class);
     });
 });
 
