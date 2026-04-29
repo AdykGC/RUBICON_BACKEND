@@ -18,12 +18,7 @@ public function __invoke(Request $request, $machineId)
         if (!Machine::where('id', $machineId)->exists()) {
             return $this->error('Machine not found', 404);
         }
-
-        try {
-            $data = $this->service->getAnalytics( );
-            return $this->success($data, 'Аналитика успешно получена');
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), 500);
-        }
+        $data = $this->service->getAnalytics($machineId, $request->start, $request->end);
+        return $this->success($data);
     }
 }
