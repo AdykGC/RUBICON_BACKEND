@@ -185,7 +185,7 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: JSON.stringify({
-                        serial_number: machineId,
+                        mac_address: machineId,
                         amount: amount
                     })
                 });
