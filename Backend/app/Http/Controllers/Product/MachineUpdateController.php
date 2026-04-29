@@ -15,7 +15,7 @@ class MachineUpdateController extends BaseController{
         $machine->update($request->validated());
         // 2. обновляем qr_code (после обновления serial_number)
         if ($machine->mac_address) {
-            $machine->qr_code = "http://213.155.20.92/pay?id=" . $machine->mac_address;
+            $machine->qr_code = "http://rub1c0n.tech/pay?id=" . $machine->mac_address;
         } else {
             $machine->qr_code = null;
         }

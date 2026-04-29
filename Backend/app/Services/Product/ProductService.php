@@ -22,7 +22,9 @@ class ProductService {
     public function index() {
         try {
             $machines = Machine::where('user_id', auth()->id())->get();
-            return $machines;
+            return [
+                'machine' => $machines,
+            ];
         } catch (\Exception $e) {
             throw new \Exception('Ошибка при получении списка: ' . $e->getMessage());
         }
