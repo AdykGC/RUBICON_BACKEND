@@ -9,16 +9,16 @@ class MachineAnalyticsService
 {
     public function getMachineDetails($machineId)
     {
-        // Ищем автомат, принадлежащий текущему пользователю
+        // Ищем автомат конкретного пользователя
         $machine = Machine::where('id', $machineId)
             ->where('user_id', Auth::id())
             ->first();
 
         if (!$machine) {
-            throw new \Exception('Автомат не найден или у вас нет доступа');
+            throw new \Exception('Автомат не найден или доступ запрещен');
         }
 
-        // Пример получения статистики (сумма успешных транзакций)
+        // Считаем доход только по успешным транзакциям
         $totalRevenue = Transaction::where('machine_id', $machineId)
             ->where('status', 'completed')
             ->sum('amount');
@@ -26,7 +26,7 @@ class MachineAnalyticsService
         return [
             'info' => $machine,
             'analytics' => [
-                'total_revenue' => $totalRevenue,
+                'total_revenue' => (float)$totalRevenue,
                 'transactions_count' => Transaction::where('machine_id', $machineId)->count(),
             ]
         ];
@@ -35,5 +35,10 @@ class MachineAnalyticsService
     public function list()
     {
         return Machine::where('user_id', Auth::id())->get();
+    }
+
+    public function index()
+    {
+        return []; // Исправлено: добавлена точка с запятой
     }
 }
