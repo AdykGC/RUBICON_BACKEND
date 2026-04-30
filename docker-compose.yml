@@ -4,8 +4,8 @@ services:
   # Nginx
   nginx:
     image: nginx:latest
-    #ports:
-      #- "80:80"
+    ports:
+      - "127.0.0.1:8080:80" 
     volumes:
       - ./_Docker/Nginx/conf.d/:/etc/nginx/conf.d/
       - ./Backend/public:/var/www/html/backend/public
