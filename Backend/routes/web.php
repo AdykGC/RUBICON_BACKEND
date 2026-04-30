@@ -16,7 +16,7 @@ Route::get('/pay', function (Request $request) { return view('website.pay', [ 'm
 
 
 
-Route::post('/bitrix/install', InstallController::class)->name('bitrix.install');
+Route::any('/bitrix/install', InstallController::class)->name('bitrix.install');
 Route::post('/bitrix/uninstall', [InstallController::class, 'uninstall']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
 Route::get('/bitrix/dashboard', DashboardController::class)->name('bitrix.dashboard');
 

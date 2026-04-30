@@ -8,14 +8,18 @@ use App\Http\Middleware\VerifyBitrixSignature; // Импортируем middlew
 
 class InstallController extends Controller {
     public function __invoke(Request $request){
-        // 1. Получаем параметры от Битрикс24
+        // 1. Проверка доступности (HEAD / GET)
+        if (!$request->isMethod('post')) { return response('OK', 200); }
+
+
+        // 2. Получаем параметры от Битрикс24 | Реальная установка (POST от Bitrix)
         $code = $request->input('code');
         $memberId = $request->input('member_id');
         $domain = $request->input('domain');
         if (!$code || !$memberId) { return response('Missing code or member_id', 400); }
 
 
-        // 2. Обмениваем code на токены через ЕДИНЫЙ OAuth-сервер
+        // 3. OAuth exchange | Обмениваем code на токены через ЕДИНЫЙ OAuth-сервер
         $tokenUrl = "https://oauth.bitrix.info/oauth/token/";
         $response = Http::asForm()->post($tokenUrl, [
             'grant_type' => 'authorization_code',

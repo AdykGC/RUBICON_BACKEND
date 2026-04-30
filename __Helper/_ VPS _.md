@@ -134,24 +134,3 @@ HTTPS
 sudo apt update
 sudo apt install certbot python3-certbot-nginx -y
 
-⚠️ Важное условие (часто ломается тут)
-
-Перед запуском certbot должно быть:
-
-✅ Домен rub1c0n.tech указывает на твой VPS
-✅ Nginx уже настроен с:
-
-server_name rub1c0n.tech www.rub1c0n.tech;
-
-✅ Сайт открывается хотя бы по HTTP:
-
-http://rub1c0n.tech
-🚀 После этого запускаешь:
-sudo certbot --nginx -d rub1c0n.tech -d www.rub1c0n.tech
-
-Он:
-
-проверит домен
-выпустит бесплатный SSL (Let's Encrypt)
-сам изменит конфиг nginx
-включит редирект на HTTPS
