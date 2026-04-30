@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 Route::get('/', function () { return view('website.rubicon'); })->name('home');
 Route::get('/product', function () { return view('website.product'); })->name('product');
-Route::get('/pay', function (Request $request) { return view('website.pay', [ 'machineId' => $request->get('id', 'RUB-795211') ]); })->name('pay');
+Route::get('/pay', function (Request $request) { return view('website.pay', [ 'machineId' => $request->get('id', '78:21:84:E2:DA:18') ]); })->name('pay');
 
 
 
