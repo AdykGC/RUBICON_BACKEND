@@ -21,6 +21,11 @@ Route::post('/bitrix/uninstall', [InstallController::class, 'uninstall']) ->midd
 Route::get('/bitrix/dashboard', DashboardController::class)->name('bitrix.dashboard');
 
 
+Route::get('/license', function () { return view('legal.license'); });
+Route::get('/privacy', function () { return view('legal.privacy'); });
+
+
+
 
 
 // (методы работают с serial_number)
