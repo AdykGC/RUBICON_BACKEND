@@ -54,12 +54,12 @@
 
     <script>
         function goToPayment() {
-            window.location.href = '{{ url("/pay?id=RUB-001") }}';
+            window.location.href = '{{ url("/pay?id=78:21:84:E2:DA:18") }}';
         }
 
         function downloadAPK() {
             const link = document.createElement('a');
-            link.href = '{{ asset("app-rubicon-release.apk") }}';
+            link.href = '{{ asset("app-release.apk") }}';
             link.download = 'Rubicon_Vending.apk';
             link.click();
         }
