@@ -105,24 +105,46 @@
 
     <section id="how" class="py-20 px-6 text-center">
         <h3 class="text-3xl font-bold">How It Works</h3>
-        <p class="text-gray-300 mt-4 max-w-xl mx-auto">Upgrade your vending business in simple steps</p>
+        <p class="text-gray-300 mt-4 max-w-xl mx-auto">
+            Upgrade your vending business in simple steps
+        </p>
 
+        <!-- ШАГИ -->
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
             <div class="relative p-8">
                 <div class="text-5xl mb-4">🔌</div>
                 <h4 class="text-lg font-semibold">1. Install</h4>
-                <p class="text-gray-400 mt-2 text-sm">Plug the Rubicon module into your machine's MDB port.</p>
+                <p class="text-gray-400 mt-2 text-sm">
+                    Plug the Rubicon module into your machine's MDB port.
+                </p>
             </div>
+
             <div class="relative p-8">
                 <div class="text-5xl mb-4">📱</div>
                 <h4 class="text-lg font-semibold">2. Pay</h4>
-                <p class="text-gray-400 mt-2 text-sm">Customers scan the QR code and pay via their banking app.</p>
+                <p class="text-gray-400 mt-2 text-sm">
+                    Customers scan the QR code and pay via their banking app.
+                </p>
             </div>
+
             <div class="relative p-8">
                 <div class="text-5xl mb-4">📈</div>
                 <h4 class="text-lg font-semibold">3. Manage</h4>
-                <p class="text-gray-400 mt-2 text-sm">Monitor sales and manage stock via the cloud dashboard.</p>
+                <p class="text-gray-400 mt-2 text-sm">
+                    Monitor sales and manage stock via the cloud dashboard.
+                </p>
             </div>
+        </div>
+
+        <!-- ВИДЕО -->
+        <div class="mt-16 mx-auto w-full max-w-4xl aspect-video">
+            <iframe 
+                class="w-full h-full rounded-2xl border border-gray-700"
+                src="https://www.youtube.com/embed/tHvc9yNT11c"
+                title="Rubicon Demo"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
         </div>
     </section>
 
