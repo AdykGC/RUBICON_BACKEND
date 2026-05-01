@@ -12,5 +12,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/bitrix/install',
         '/bitrix/uninstall',
+        // Добавьте эту строку:
+        '/bitrix/dashboard',
     ];
 }

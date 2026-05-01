@@ -50,13 +50,5 @@ Route::prefix('analytics')->group(function () {
 });
 
 
-/*
-2. НОВАЯ АРХИТЕКТУРА (MQTT system)
-    Это модель: “сервер управляет устройствами”
-FLOW:
-1. HTTP → Laravel создаёт команду
-2. Laravel → MQTT publish
-3. ESP32 → выполняет
-4. ESP32 → MQTT ACK
-5. Laravel → фиксирует результат
-*/
+/* ********************************    BITRIX 24    ******************************** */
+Route::get('/bitrix/dashboard', \App\Http\Controllers\Bitrix24\DashboardController::class);

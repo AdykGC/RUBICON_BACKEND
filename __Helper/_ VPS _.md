@@ -128,9 +128,123 @@ sudo apt install mc -y
 mc
 
 
+<h3 align="center"> ------------------------------------ </h3>
+<h3 align="center"> HTTPS </h3>
+<h3 align="center"> ------------------------------------ </h3>
 
-HTTPS
+Обновляем систему:
 
-sudo apt update
-sudo apt install certbot python3-certbot-nginx -y
+    sudo apt update
+    sudo apt upgrade -y
 
+Установка Nginx на хосте
+
+    sudo apt install nginx certbot python3-certbot-nginx -y
+
+Настройка reverse proxy
+
+    sudo nano /etc/nginx/sites-available/rub1c0n.tech
+
+/etc/nginx/sites-available/rub1c0n.tech(Version1)
+
+    server {
+        server_name rub1c0n.tech www.rub1c0n.tech;
+    
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/rub1c0n.tech/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /etc/letsencrypt/live/rub1c0n.tech/privkey.pem; # managed by Certbot
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    }
+    
+    server {
+        if ($host = www.rub1c0n.tech) {
+            return 301 https://$host$request_uri;
+        } # managed by Certbot
+    
+    
+        if ($host = rub1c0n.tech) {
+            return 301 https://$host$request_uri;
+        } # managed by Certbot
+    
+    
+        listen 80;
+        server_name rub1c0n.tech www.rub1c0n.tech;
+        return 404; # managed by Certbot
+    
+    }
+
+/etc/nginx/sites-available/rub1c0n.tech(Version2)
+
+    server {
+        listen 80;
+        server_name rub1c0n.tech www.rub1c0n.tech;
+    
+        return 301 https://$host$request_uri;
+    }
+    
+    server {
+        listen 443 ssl;
+        server_name rub1c0n.tech www.rub1c0n.tech;
+    
+        ssl_certificate /etc/letsencrypt/live/rub1c0n.tech/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/rub1c0n.tech/privkey.pem;
+        include /etc/letsencrypt/options-ssl-nginx.conf;
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+    
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+Активация:
+
+    sudo ln -s /etc/nginx/sites-available/rub1c0n.tech /etc/nginx/sites-enabled/
+    sudo nginx -t
+    sudo systemctl restart nginx
+
+Получение HTTPS (Let's Encrypt)
+
+    sudo certbot --nginx -d rub1c0n.tech -d www.rub1c0n.tech
+
+Результат:
+
+└──  SSL установлен
+
+└──  HTTP → HTTPS редирект включен
+
+└──  Сертификат автообновляется
+
+Проверка
+
+    curl -I http://127.0.0.1:8080
+    curl -I https://rub1c0n.tech
+
+Ожидаем:
+
+└──  HTTP/1.1 200 OK
+
+Итоговая архитектура
+
+    Internet
+       ↓ ↑
+    VPS Nginx (host, HTTPS)
+       ↓ ↑
+    127.0.0.1:8080
+       ↓ ↑
+    Docker Nginx
+       ↓ ↑
+    Laravel (PHP-FPM)
+       ↓ ↑
+    MariaDB / Redis / Mosquitto

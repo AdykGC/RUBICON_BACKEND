@@ -10,19 +10,21 @@ class DashboardController extends Controller {
 public function __invoke(Request $request)
 {
     $memberId = $request->query('member_id');
-    $authIdFromFrame = $request->query('AUTH_ID'); // Получаем токен из iframe
 
-    if (!$memberId) {
-        return response('Missing member_id', 403);
+    if ($memberId) {
+        $portal = BitrixPortal::where('member_id', $memberId)->first();
+    } else {
+        $domain = $request->query('DOMAIN');
+
+        if (!$domain) {
+            return response('Missing portal идентификатор', 403);
+        }
+
+        $portal = BitrixPortal::where('domain', $domain)->first();
     }
 
-    $portal = BitrixPortal::where('member_id', $memberId)->firstOrFail();
-
-    // Если Битрикс24 передал в iframe AUTH_ID, обновляем токен в БД
-    if ($authIdFromFrame && $authIdFromFrame !== $portal->access_token) {
-        $portal->update(['access_token' => $authIdFromFrame]);
-        // Обновляем объект $portal, чтобы сервис использовал новый токен
-        $portal->refresh();
+    if (!$portal) {
+        return response('Portal not found', 404);
     }
 
     $service = new Bitrix24Service($portal);
@@ -31,3 +33,4 @@ public function __invoke(Request $request)
     return view('bitrix.dashboard', compact('userInfo'));
 }
 }
+
