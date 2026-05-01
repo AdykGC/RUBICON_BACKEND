@@ -9,12 +9,12 @@ use App\Http\Controllers\Controller;
 class DashboardController extends Controller {
 public function __invoke(Request $request)
 {
-    $memberId = $request->query('member_id');
+    $memberId = $request->input('member_id') ?: $request->input('MEMBER_ID');
 
     if ($memberId) {
         $portal = BitrixPortal::where('member_id', $memberId)->first();
     } else {
-        $domain = $request->query('DOMAIN');
+        $domain = $request->input('domain') ?: $request->input('DOMAIN');
 
         if (!$domain) {
             return response('Missing portal идентификатор', 403);
@@ -33,4 +33,3 @@ public function __invoke(Request $request)
     return view('bitrix.dashboard', compact('userInfo'));
 }
 }
-

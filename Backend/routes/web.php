@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Bitrix24\{ InstallController, DashboardController, };
-use App\Http\Middleware\VerifyBitrixSignature;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Hardware\MqttCommandController;
 
@@ -19,11 +17,45 @@ Route::get('/machine/balance/{serialNumber}', [PaymentController::class, 'getBal
 Route::post('/machine/topup', MqttCommandController::class);
 
 
-/* ********************************    BITRIX 24    ******************************** */
-Route::get('/license', function () { return view('legal.license'); });
-Route::get('/privacy', function () { return view('legal.privacy'); });
-
-Route::any('/bitrix/install', InstallController::class)->name('bitrix.install');
-Route::post('/bitrix/uninstall', [InstallController::class, 'uninstall']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
+#Route::get('/license', function () { return view('legal.license'); });
+#Route::get('/privacy', function () { return view('legal.privacy'); });
+#    Route::any('/bitrix/install', InstallController::class)->name('bitrix.install');
+#    Route::post('/bitrix/uninstall', [InstallController::class, 'uninstall']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
 #    Route::get('/bitrix/dashboard', DashboardController::class)->name('bitrix.dashboard');
 
+
+
+/* ********************************    BITRIX 24    ******************************** */
+use App\Http\Controllers\Bitrix24\{
+    InstallController,
+    UninstallController,
+    DashboardController,
+    PlacementController,
+    EventController
+};
+use App\Http\Controllers\Bitrix24\InstallUiController;
+use App\Http\Middleware\VerifyBitrixSignature;
+
+// Legal
+Route::view('/license', 'legal.license');
+Route::view('/privacy', 'legal.privacy');
+
+
+// Install / uninstall
+Route::any('/bitrix/install', InstallController::class) ->name('bitrix.install');
+Route::post('/bitrix/uninstall', [UninstallController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
+
+// страница мастера установки (iframe в Битриксе)
+Route::get('/bitrix/install/ui', InstallUiController::class) ->name('bitrix.install.ui');
+Route::get('/bitrix/install/ui', InstallUiController::class)->name('bitrix.install.ui');
+
+// Dashboard iframe
+Route::any('/bitrix/dashboard', DashboardController::class) ->name('bitrix.dashboard');
+
+
+// Placements (CRM tabs, buttons)
+Route::any('/bitrix/placement/{placement}', [PlacementController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.placement');
+
+
+// Events (ONCRMDEALADD, etc.)
+Route::post('/bitrix/events/{event}', [EventController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.events');

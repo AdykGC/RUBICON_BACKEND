@@ -1,4 +1,6 @@
-<?php namespace App\Http\Middleware;
+<?php
+
+namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
@@ -12,7 +14,8 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/bitrix/install',
         '/bitrix/uninstall',
-        // Добавьте эту строку:
         '/bitrix/dashboard',
+        '/bitrix/placement/*',
+        '/bitrix/events/*',
     ];
 }

@@ -51,4 +51,4 @@ Route::prefix('analytics')->group(function () {
 
 
 /* ********************************    BITRIX 24    ******************************** */
-Route::get('/bitrix/dashboard', \App\Http\Controllers\Bitrix24\DashboardController::class);
+// Route::get('/bitrix/dashboard', \App\Http\Controllers\Bitrix24\DashboardController::class);

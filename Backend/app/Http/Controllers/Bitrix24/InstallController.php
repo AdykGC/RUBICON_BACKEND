@@ -9,14 +9,15 @@ use App\Http\Middleware\VerifyBitrixSignature; // Импортируем middlew
 class InstallController extends Controller {
     public function __invoke(Request $request){
         // 1. Проверка доступности (HEAD / GET)
-        if (!$request->isMethod('post')) { return response('OK', 200); }
+        if ($request->isMethod('get')) { return response('OK', 200); }
+        if (!$request->isMethod('post')) { return response('Method not allowed', 405); }
 
 
         // 2. Получаем параметры от Битрикс24 | Реальная установка (POST от Bitrix)
         $code = $request->input('code');
         $memberId = $request->input('member_id');
         $domain = $request->input('domain');
-        if (!$code || !$memberId) { return response('Missing code or member_id', 400); }
+        if (!$code || !$memberId || !$domain) { return response('Missing code, member_id or domain', 400); }
 
 
         // 3. OAuth exchange | Обмениваем code на токены через ЕДИНЫЙ OAuth-сервер
@@ -47,7 +48,7 @@ class InstallController extends Controller {
                 // ... (сохранение access_token, refresh_token и т.д.)
                 'application_token' => $request->input('application_token') ?? $data['application_token'] ?? null,
                  // Сначала ищем в ответе обмена, потом в исходном запросе
-                'client_endpoint' => $data['client_endpoint'],
+                'client_endpoint' => $data['client_endpoint'] ?? "https://{$domain}/rest/",
                 'expires_at'      => now()->addSeconds($data['expires_in']),
             ]
         );

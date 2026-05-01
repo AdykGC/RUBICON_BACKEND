@@ -1,0 +1,30 @@
+{
+  "code": "rub1c0n.app",
+  "version": "1.0.0",
+  "name": {
+    "ru": "Rub1c0n",
+    "en": "Rub1c0n"
+  },
+  "description": "...",
+  "platform": "bitrix24",
+  "type": "application",
+  "install_url": "https://rub1c0n.tech/bitrix/install",
+  "uninstall_url": "https://rub1c0n.tech/bitrix/uninstall",
+  "icons": { ... },
+  "scopes": [
+    "crm",
+    "user",
+    "placement",
+    "event"
+  ],
+  "placements": [
+    {
+      "code": "CRM_DEAL_DETAIL_TAB",
+      "handler": "https://rub1c0n.tech/bitrix/placement/deal-tab"
+    }
+  ],
+  "events": {
+    "ONCRMDEALADD": "https://rub1c0n.tech/bitrix/events/crm-deal-add",
+    "ONCRMDEALUPDATE": "https://rub1c0n.tech/bitrix/events/crm-deal-update"
+  }
+}
