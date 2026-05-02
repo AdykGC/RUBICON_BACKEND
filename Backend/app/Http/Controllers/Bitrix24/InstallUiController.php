@@ -5,10 +5,16 @@ use App\Models\BitrixPortal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Log;
+
 class InstallUiController extends Controller
 {
     public function __invoke(Request $request)
     {
+        Log::info('Install UI hit', [
+            'method' => $request->method(),
+            'all'    => $request->all(),
+        ]);
         // Bitrix при открытии install UI передаст DOMAIN и/или member_id
         $memberId = $request->input('member_id') ?: $request->input('MEMBER_ID');
         $domain   = $request->input('domain') ?: $request->input('DOMAIN');
