@@ -2,11 +2,8 @@ includes:
     - vendor/nunomaduro/larastan/extension.neon
 
 parameters:
-    # Уровень строгости: 0–9
     level: 5
-
-    # Версия PHP для анализа (8.2)
-    phpVersion: 80200
+    phpVersion: 80400
 
     paths:
         - app
@@ -15,21 +12,3 @@ parameters:
         - database
 
     reportUnmatchedIgnoredErrors: false
-
-    # Настройки Larastan
-    larastan:
-        # Если нужно явно указать bootstrap:
-        # bootstrapFiles:
-        #     - bootstrap/app.php
-
-    # Общие настройки PHPStan
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
-
-    # Параллельный запуск
-    parallel:
-        maximumNumberOfProcesses: 4
-
-    # Игнорируем шум
-    ignoreErrors:
-        - '#PHPDoc tag @var#'
