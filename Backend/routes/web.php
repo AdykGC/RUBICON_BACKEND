@@ -41,25 +41,23 @@ Route::view('/license', 'legal.license');
 Route::view('/privacy', 'legal.privacy');
 
 
-// Install / uninstall
+// 1) Общая установка приложения (REST, не iframe)
 Route::any('/bitrix/install', InstallController::class) ->name('bitrix.install');
+
+// 2) Uninstall
 Route::post('/bitrix/uninstall', [UninstallController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
 
-// страница мастера установки (iframe в Битриксе)
+// 3) Мастер установки в iframe (UI)
 Route::any('/bitrix/install/ui', InstallUiController::class) ->name('bitrix.install.ui');
 
-
-// Dashboard iframe
+// 4) Dashboard iframe
 Route::any('/bitrix/dashboard', DashboardController::class) ->name('bitrix.dashboard');
 
-
-// Placements (CRM tabs, buttons)
+// 5) Placements (например CRM_DEAL_DETAIL_TAB)
 Route::any('/bitrix/placement/{placement}', [PlacementController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.placement');
 
-
-// Events (ONCRMDEALADD, etc.)
+// 6) Events (ONCRMDEALADD и т.п.)
 Route::post('/bitrix/events/{event}', [EventController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.events');
 
-// Минимум HTML + Bitrix JS
-// Route::get('/bitrix/install/ui-lite', function () { return view('bitrix.install-lite'); })->name('bitrix.install.ui-lite');
+// 7) Облегчённый мастер установки
 Route::match(['get', 'post'], '/bitrix/install/ui-lite', function () { return view('bitrix.install-lite'); })->name('bitrix.install.ui-lite');
