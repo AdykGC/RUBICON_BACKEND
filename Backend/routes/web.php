@@ -61,4 +61,5 @@ Route::any('/bitrix/placement/{placement}', [PlacementController::class, '__invo
 Route::post('/bitrix/events/{event}', [EventController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.events');
 
 // Минимум HTML + Bitrix JS
-Route::get('/bitrix/install/ui-lite', function () { return view('bitrix.install-lite'); })->name('bitrix.install.ui-lite');
+// Route::get('/bitrix/install/ui-lite', function () { return view('bitrix.install-lite'); })->name('bitrix.install.ui-lite');
+Route::match(['get', 'post'], '/bitrix/install/ui-lite', function () { return view('bitrix.install-lite'); })->name('bitrix.install.ui-lite');
