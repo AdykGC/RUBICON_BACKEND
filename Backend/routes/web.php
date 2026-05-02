@@ -60,9 +60,9 @@ Route::any('/bitrix/placement/{placement}', [PlacementController::class, '__invo
 // Events (ONCRMDEALADD, etc.)
 Route::post('/bitrix/events/{event}', [EventController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.events');
 
-Route::any('/bitrix/install/ui-plain', function () {
 // Минимум HTML + Bitrix JS
-return response(<<<HTML
+Route::any('/bitrix/install/ui-plain', function () {
+    return response(<<<HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -80,15 +80,11 @@ BX24.init(function () {
         HANDLER: 'https://rub1c0n.tech/bitrix/placement/deal-tab',
         TITLE: 'Rub1c0n',
         DESCRIPTION: 'Виджет сделки'
-    }, function (result) {
-        console.log('placement.bind', result.data(), result.error());
     });
 
     BX24.callMethod('event.bind', {
         event: 'ONCRMDEALADD',
         handler: 'https://rub1c0n.tech/bitrix/events/crm-deal-add'
-    }, function (result) {
-        console.log('event.bind', result.data(), result.error());
     });
 
     BX24.installFinish();
