@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         'bitrix/placement/*',
         'bitrix/events/*',
         'bitrix/install/ui-lite',
+        'bitrix/install/ui-plain',
         'bitrix/install/ui',
         'bitrix/dashboard',
     ];
