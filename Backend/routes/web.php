@@ -46,8 +46,8 @@ Route::any('/bitrix/install', InstallController::class) ->name('bitrix.install')
 Route::post('/bitrix/uninstall', [UninstallController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
 
 // страница мастера установки (iframe в Битриксе)
-Route::get('/bitrix/install/ui', InstallUiController::class) ->name('bitrix.install.ui');
-Route::get('/bitrix/install/ui', InstallUiController::class)->name('bitrix.install.ui');
+Route::any('/bitrix/install/ui', InstallUiController::class) ->name('bitrix.install.ui');
+
 
 // Dashboard iframe
 Route::any('/bitrix/dashboard', DashboardController::class) ->name('bitrix.dashboard');
