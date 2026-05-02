@@ -59,3 +59,42 @@ Route::any('/bitrix/placement/{placement}', [PlacementController::class, '__invo
 
 // Events (ONCRMDEALADD, etc.)
 Route::post('/bitrix/events/{event}', [EventController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.events');
+
+Route::any('/bitrix/install/ui-plain', function () {
+// Минимум HTML + Bitrix JS
+return response(<<<HTML
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Rub1c0n install wizard</title>
+    <script src="https://api.bitrix24.com/api/v1/"></script>
+</head>
+<body>
+<script>
+BX24.init(function () {
+    BX24.fitWindow();
+
+    BX24.callMethod('placement.bind', {
+        PLACEMENT: 'CRM_DEAL_DETAIL_TAB',
+        HANDLER: 'https://rub1c0n.tech/bitrix/placement/deal-tab',
+        TITLE: 'Rub1c0n',
+        DESCRIPTION: 'Виджет сделки'
+    }, function (result) {
+        console.log('placement.bind', result.data(), result.error());
+    });
+
+    BX24.callMethod('event.bind', {
+        event: 'ONCRMDEALADD',
+        handler: 'https://rub1c0n.tech/bitrix/events/crm-deal-add'
+    }, function (result) {
+        console.log('event.bind', result.data(), result.error());
+    });
+
+    BX24.installFinish();
+});
+</script>
+</body>
+</html>
+HTML, 200)->header('Content-Type', 'text/html; charset=utf-8');
+});
