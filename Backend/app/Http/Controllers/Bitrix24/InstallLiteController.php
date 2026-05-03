@@ -1,12 +1,9 @@
 <?php namespace App\Http\Controllers\Bitrix24;
 
+use App\Http\Controllers\Controller;
 use App\Models\BitrixPortal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
-
-
 
 class InstallLiteController extends Controller
 {
@@ -18,7 +15,6 @@ class InstallLiteController extends Controller
             'all'    => $request->all(),
         ]);
 
-        dd($request->all())
         // 1) Принимаем только POST с ONAPPINSTALL
         if (! $request->isMethod('post')) {
             return response('Method not allowed', 405);
@@ -32,7 +28,6 @@ class InstallLiteController extends Controller
             return response('Bad install payload', 400);
         }
 
-        // 2) Сохраняем/обновляем портал
         BitrixPortal::updateOrCreate(
             ['member_id' => $auth['member_id']],
             [
@@ -47,8 +42,6 @@ class InstallLiteController extends Controller
 
         Log::info('BitrixPortal saved', ['member_id' => $auth['member_id']]);
 
-        // 3) Для install-lite достаточно 200 без тела
         return response('', 200);
     }
 }
-
