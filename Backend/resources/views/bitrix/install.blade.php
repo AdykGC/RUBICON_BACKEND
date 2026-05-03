@@ -164,7 +164,6 @@
         el.scrollTop = el.scrollHeight;
     }
 
-
     function setStep(id, state) {
         const el = document.getElementById(id + '-status');
         el.classList.remove('pending', 'active', 'done', 'error');
@@ -182,16 +181,15 @@
         }
     }
 
-
     BX24.init(async function () {
         try {
             BX24.fitWindow();
+
             // 1. Auth
             setStep('step-auth', 'active');
             const auth = BX24.getAuth();
             log('Auth: ' + JSON.stringify(auth));
             setStep('step-auth', 'done');
-
 
             // 2. placement.bind
             setStep('step-placement', 'active');
@@ -205,16 +203,25 @@
                     DESCRIPTION: 'Виджет сделки'
                 }, function (result) {
                     if (result.error()) {
-                        log('placement.bind error: ' + result.error());
+                        const err = result.error();
+                        log('placement.bind error: ' + err);
+
+                        // Если обработчик уже привязан — считаем шаг успешным
+                        if (err.indexOf('Handler already binded') !== -1) {
+                            log('placement.bind: handler уже привязан, шаг считаем OK');
+                            setStep('step-placement', 'done');
+                            return resolve();
+                        }
+
                         setStep('step-placement', 'error');
-                        return reject(result.error());
+                        return reject(err);
                     }
+
                     log('placement.bind OK: ' + JSON.stringify(result.data()));
                     setStep('step-placement', 'done');
                     resolve();
                 });
             });
-
 
             // 3. event.bind
             setStep('step-events', 'active');
@@ -226,10 +233,21 @@
                         + '&application_token={{ $applicationTokenFromServer }}'
                 }, function (result) {
                     if (result.error()) {
-                        log('event.bind error: ' + result.error());
+                        const err = result.error();
+                        log('event.bind error: ' + err);
+
+                        // Если обработчик события уже зарегистрирован — тоже считаем ОК
+                        if (err.indexOf('Handler already binded') !== -1 ||
+                            err.indexOf('event handler already registered') !== -1) {
+                            log('event.bind: handler уже привязан, шаг считаем OK');
+                            setStep('step-events', 'done');
+                            return resolve();
+                        }
+
                         setStep('step-events', 'error');
-                        return reject(result.error());
+                        return reject(err);
                     }
+
                     log('event.bind OK: ' + JSON.stringify(result.data()));
                     setStep('step-events', 'done');
                     resolve();
@@ -242,10 +260,11 @@
                 BX24.installFinish();
                 setStep('step-finish', 'done');
                 log('installFinish called');
-            }, 5000);
+            }, 500);
+
             document.getElementById('success').style.display = 'block';
 
-            // На всякий случай: если Bitrix вдруг не закрывает окно сам — закроем через 2 сек
+            // На всякий случай: если Bitrix не закрыл окно сам — пробуем
             setTimeout(function () {
                 try { BX24.closeApplication(); } catch (e) {}
             }, 2000);

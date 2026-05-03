@@ -31,41 +31,11 @@ Route::view('/privacy', 'legal.privacy');
 
 /*                   MAIN VERSION                 */
 use App\Http\Controllers\Bitrix24\{
-    InstallController, UninstallController,
     PlacementController, EventController,
 };
-
-/*                   LITE VERSION                 */
-use App\Http\Controllers\Bitrix24\{
-    InstallLiteController,
-};
-
-
-Route::middleware('bitrix')->prefix('bitrix')->group(function () {
-    // full install, если используется
-    Route::any('/install', InstallController::class)->name('bitrix.install');
-
-
-/* ---------------------------------------------- */
-/*                   LITE VERSION                 */
-/* ---------------------------------------------- */
-    // Route::any('/install-lite', InstallLiteController::class) ->name('bitrix.install-lite');
-
-    // iframe мастера установки (если нужен)
-    Route::any('/install/ui', function () {
-        return view('bitrix.install', [
-            'applicationTokenFromServer' => '...',
-        ]);
-    })->name('bitrix.install.ui');
-
-    // uninstall / events / placement / dashboard
-    Route::post('/uninstall', [UninstallController::class, '__invoke'])
-        ->name('bitrix.uninstall');
-
 
     Route::any('/placement/{placement}', [PlacementController::class, '__invoke'])
         ->name('bitrix.placement');
 
     Route::post('/events/{event}', [EventController::class, '__invoke'])
         ->name('bitrix.events');
-});
