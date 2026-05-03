@@ -18,6 +18,7 @@ class InstallLiteController extends Controller
             'all'    => $request->all(),
         ]);
 
+        dd($request->all())
         // 1) Принимаем только POST с ONAPPINSTALL
         if (! $request->isMethod('post')) {
             return response('Method not allowed', 405);

@@ -50,8 +50,7 @@ Route::middleware('bitrix')->prefix('bitrix')->group(function () {
 /* ---------------------------------------------- */
 /*                   LITE VERSION                 */
 /* ---------------------------------------------- */
-    Route::any('/install-lite', InstallLiteController::class)
-        ->name('bitrix.install-lite');
+    // Route::any('/install-lite', InstallLiteController::class) ->name('bitrix.install-lite');
 
     // iframe мастера установки (если нужен)
     Route::any('/install/ui', function () {

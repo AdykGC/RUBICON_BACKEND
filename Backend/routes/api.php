@@ -51,4 +51,12 @@ Route::prefix('analytics')->group(function () {
 
 
 /* ********************************    BITRIX 24    ******************************** */
-// Route::get('/bitrix/dashboard', \App\Http\Controllers\Bitrix24\DashboardController::class);
+/*                   LITE VERSION                 */
+use App\Http\Controllers\Bitrix24\{
+    InstallLiteController,
+};
+
+/* ---------------------------------------------- */
+/*                   LITE VERSION                 */
+/* ---------------------------------------------- */
+Route::any('/bitrix/install-lite', InstallLiteController::class);
