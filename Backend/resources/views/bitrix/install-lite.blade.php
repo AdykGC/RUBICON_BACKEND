@@ -3,10 +3,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Rub1c0n install wizard</title>
+    <title>Установка Rub1c0n</title>
     <script src="https://api.bitrix24.com/api/v1/"></script>
 </head>
 <body>
+    <p>Приложение Rub1c0n успешно установлено. Это окно можно закрыть.</p>
 <script>
     BX24.init(function () {
         BX24.fitWindow();
@@ -27,4 +28,4 @@
     });
 </script>
 </body>
-</html>
+

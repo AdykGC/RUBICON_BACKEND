@@ -17,6 +17,7 @@ class InstallLiteController extends Controller
             'all'    => $request->all(),
         ]);
 
+        // 1. Разбираем payload установки (как сейчас)
         $memberId   = $request->input('member_id');
         $domain     = $request->input('DOMAIN');
         $authId     = $request->input('AUTH_ID');
@@ -50,6 +51,14 @@ class InstallLiteController extends Controller
 
         Log::info('BitrixPortal saved (lite)', ['member_id' => $memberId]);
 
-        return response('', 200);
+        // 2. Всегда возвращаем HTML, а не пустой 200
+        // Вариант 1: Белый пустой IFRAME
+        //return response('', 200);
+        
+        // Вариант 2: Сразу дашборд
+        //return view('bitrix.dashboard');
+        
+        // Вариант 3: Сперва мастер установки
+        return view('bitrix.install', [ 'applicationTokenFromServer' => $appToken ?? '', ]);
     }
 }
