@@ -238,10 +238,11 @@
 
             // 4. installFinish
             setStep('step-finish', 'active');
-            BX24.installFinish();
-            setStep('step-finish', 'done');
-            log('installFinish called');
-
+            setTimeout(function () {
+                BX24.installFinish();
+                setStep('step-finish', 'done');
+                log('installFinish called');
+            }, 5000);
             document.getElementById('success').style.display = 'block';
 
             // На всякий случай: если Bitrix вдруг не закрывает окно сам — закроем через 2 сек

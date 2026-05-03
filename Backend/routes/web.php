@@ -33,7 +33,6 @@ use App\Http\Controllers\Bitrix24\{
     PlacementController,
     EventController
 };
-use App\Http\Controllers\Bitrix24\InstallUiController;
 use App\Http\Middleware\VerifyBitrixSignature;
 
 // Legal
@@ -43,7 +42,9 @@ Route::view('/privacy', 'legal.privacy');
 
 
 
-
+/* ---------------------------------------------- */
+/*                   MAIN VERSION                 */
+/* ---------------------------------------------- */
 
 // 1) Общая установка приложения (REST, не iframe)
 Route::any('/bitrix/install', InstallController::class)
@@ -58,12 +59,8 @@ Route::any('/bitrix/install/ui', function () {
     ]);
 })->name('bitrix.install.ui');
 
-
 // 2) Uninstall
 Route::post('/bitrix/uninstall', [UninstallController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
-
-// 3) Мастер установки в iframe (UI)
-Route::any('/bitrix/install/ui', InstallUiController::class) ->name('bitrix.install.ui');
 
 // 4) Dashboard iframe
 Route::any('/bitrix/dashboard', DashboardController::class) ->name('bitrix.dashboard');
@@ -76,3 +73,25 @@ Route::post('/bitrix/events/{event}', [EventController::class, '__invoke']) ->mi
 
 // 7) Облегчённый мастер установки
 Route::match(['get', 'post'], '/bitrix/install/ui-lite', function () { return view('bitrix.install-lite'); })->name('bitrix.install.ui-lite');
+
+
+
+
+/* ---------------------------------------------- */
+/*                   LITE VERSION                 */
+/* ---------------------------------------------- */
+use App\Http\Controllers\Bitrix24\InstallLiteController;
+
+/*
+Оставить ссылки на приложение
+    Ссылка на приложение
+        https://rub1c0n.tech/bitrix/dashboard
+    Ссылка на установочное приложение
+        https://rub1c0n.tech/bitrix/install
+    Настройки приложения
+*/
+
+
+// REST‑callback установки (упрощённый вариант через event+auth)
+Route::any('/bitrix/install-lite', InstallLiteController::class)
+    ->name('bitrix.install-lite');
