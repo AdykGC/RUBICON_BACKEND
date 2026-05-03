@@ -15,6 +15,11 @@ class InstallLiteController extends Controller
             'all'    => $request->all(),
         ]);
 
+        // HEAD/GET-запрос от Bitrix для проверки URL – просто ответ 200
+        if ($request->isMethod('head') || $request->isMethod('get')) {
+            return response('', 200);
+        }
+
         // 1) Принимаем только POST с ONAPPINSTALL
         if (! $request->isMethod('post')) {
             return response('Method not allowed', 405);

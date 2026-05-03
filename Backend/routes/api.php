@@ -59,4 +59,9 @@ use App\Http\Controllers\Bitrix24\{
 /* ---------------------------------------------- */
 /*                   LITE VERSION                 */
 /* ---------------------------------------------- */
-Route::any('/bitrix/install-lite', InstallLiteController::class);
+// HEAD/GET для проверки доступности URL — отдаём 200 сразу
+Route::match(['GET', 'HEAD'], '/bitrix/install-lite', function (Request $request) {
+    return response('', 200);
+});
+
+Route::post('/bitrix/install-lite', InstallLiteController::class);
