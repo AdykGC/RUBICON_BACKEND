@@ -32,7 +32,6 @@ Route::view('/privacy', 'legal.privacy');
 /*                   MAIN VERSION                 */
 use App\Http\Controllers\Bitrix24\{
     InstallController, UninstallController,
-    DashboardController,
     PlacementController, EventController,
 };
 
@@ -63,8 +62,6 @@ Route::middleware('bitrix')->prefix('bitrix')->group(function () {
     Route::post('/uninstall', [UninstallController::class, '__invoke'])
         ->name('bitrix.uninstall');
 
-    Route::any('/dashboard', DashboardController::class)
-        ->name('bitrix.dashboard');
 
     Route::any('/placement/{placement}', [PlacementController::class, '__invoke'])
         ->name('bitrix.placement');

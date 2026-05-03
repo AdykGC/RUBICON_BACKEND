@@ -53,7 +53,7 @@ Route::prefix('analytics')->group(function () {
 /* ********************************    BITRIX 24    ******************************** */
 /*                   LITE VERSION                 */
 use App\Http\Controllers\Bitrix24\{
-    InstallLiteController,
+    InstallLiteController, DashboardLiteController, 
 };
 
 /* ---------------------------------------------- */
@@ -63,5 +63,10 @@ use App\Http\Controllers\Bitrix24\{
 Route::match(['GET', 'HEAD'], '/bitrix/install-lite', function (Request $request) {
     return response('', 200);
 });
-
 Route::post('/bitrix/install-lite', InstallLiteController::class);
+
+
+Route::match(['GET', 'HEAD'], '/bitrix/dashboard-lite', function (Request $request) {
+    return response('', 200);
+});
+Route::post('/bitrix/dashboard-lite', DashboardLiteController::class);
