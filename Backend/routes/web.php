@@ -87,7 +87,7 @@ use App\Http\Controllers\Bitrix24\InstallLiteController;
     Ссылка на приложение
         https://rub1c0n.tech/bitrix/dashboard
     Ссылка на установочное приложение
-        https://rub1c0n.tech/bitrix/install
+        https://rub1c0n.tech/bitrix/install-lite
     Настройки приложения
 */
 

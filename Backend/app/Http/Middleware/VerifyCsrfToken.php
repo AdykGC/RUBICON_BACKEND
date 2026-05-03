@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'bitrix/install*',
+        'bitrix/install-lite',
         'bitrix/uninstall*',
         'bitrix/placement/*',
         'bitrix/events/*',
