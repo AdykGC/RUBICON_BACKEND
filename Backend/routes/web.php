@@ -41,8 +41,23 @@ Route::view('/license', 'legal.license');
 Route::view('/privacy', 'legal.privacy');
 
 
+
+
+
+
 // 1) Общая установка приложения (REST, не iframe)
-Route::any('/bitrix/install', InstallController::class) ->name('bitrix.install');
+Route::any('/bitrix/install', InstallController::class)
+    ->name('bitrix.install');
+
+
+// 2) Страница мастера установки (iframe в Битриксе)
+Route::any('/bitrix/install/ui', function () {
+    // TODO: здесь вместо '...' передай реальный токен из БД, если он нужен
+    return view('bitrix.install', [
+        'applicationTokenFromServer' => '...',
+    ]);
+})->name('bitrix.install.ui');
+
 
 // 2) Uninstall
 Route::post('/bitrix/uninstall', [UninstallController::class, '__invoke']) ->middleware(VerifyBitrixSignature::class) ->name('bitrix.uninstall');
