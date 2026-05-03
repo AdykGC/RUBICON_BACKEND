@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers\Bitrix24;
+<?php
+
+namespace App\Http\Controllers\Bitrix24;
 
 use App\Http\Controllers\Controller;
 use App\Models\BitrixPortal;
@@ -15,37 +17,38 @@ class InstallLiteController extends Controller
             'all'    => $request->all(),
         ]);
 
-        // HEAD/GET-запрос от Bitrix для проверки URL – просто ответ 200
-        if ($request->isMethod('head') || $request->isMethod('get')) {
-            return response('', 200);
-        }
+        $memberId   = $request->input('member_id');
+        $domain     = $request->input('DOMAIN');
+        $authId     = $request->input('AUTH_ID');
+        $refreshId  = $request->input('REFRESH_ID');
+        $expiresIn  = (int) $request->input('AUTH_EXPIRES', 3600);
+        $appToken   = $request->input('APPLICATION_TOKEN');
+        $scope      = $request->input('APPLICATION_SCOPE');
+        $endpoint   = $request->input('SERVER_ENDPOINT');
 
-        // 1) Принимаем только POST с ONAPPINSTALL
-        if (! $request->isMethod('post')) {
-            return response('Method not allowed', 405);
-        }
-
-        $event = $request->input('event');
-        $auth  = $request->input('auth', []);
-
-        if ($event !== 'ONAPPINSTALL' || empty($auth['member_id']) || empty($auth['domain'])) {
-            Log::warning('Bad install payload', ['event' => $event, 'auth' => $auth]);
+        if (empty($memberId) || empty($domain) || empty($authId)) {
+            Log::warning('Bad install payload (lite)', [
+                'member_id' => $memberId,
+                'domain'    => $domain,
+                'AUTH_ID'   => $authId,
+            ]);
             return response('Bad install payload', 400);
         }
 
         BitrixPortal::updateOrCreate(
-            ['member_id' => $auth['member_id']],
+            ['member_id' => $memberId],
             [
-                'domain'            => $auth['domain'],
-                'access_token'      => $auth['access_token'] ?? null,
-                'refresh_token'     => $auth['refresh_token'] ?? null,
-                'application_token' => $auth['application_token'] ?? null,
-                'client_endpoint'   => $auth['client_endpoint'] ?? "https://{$auth['domain']}/rest/",
-                'expires_at'        => now()->addSeconds($auth['expires_in'] ?? 3600),
+                'domain'            => $domain,
+                'access_token'      => $authId,
+                'refresh_token'     => $refreshId,
+                'application_token' => $appToken,
+                'client_endpoint'   => $endpoint,
+                'scope'             => $scope,
+                'expires_at'        => now()->addSeconds($expiresIn),
             ]
         );
 
-        Log::info('BitrixPortal saved', ['member_id' => $auth['member_id']]);
+        Log::info('BitrixPortal saved (lite)', ['member_id' => $memberId]);
 
         return response('', 200);
     }
