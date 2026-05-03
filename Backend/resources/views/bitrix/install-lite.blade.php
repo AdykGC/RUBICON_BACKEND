@@ -1,3 +1,4 @@
+{{-- Backend/resources/views/bitrix/install-lite.blade.php --}}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
