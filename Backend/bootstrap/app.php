@@ -25,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->respond(function (Response $response) {
             if ($response->getStatusCode() === 419) {
+                // Если это запрос к Bitrix-интеграции, не редиректим, а возвращаем ответ как есть
+                if (request()->is('bitrix/*')) {
+                    return response('CSRF/Session issue on Bitrix endpoint', 419);
+                }
                 return redirect()
                     ->back()
                     ->withInput(request()->except('password'))
