@@ -1,11 +1,15 @@
-<?php namespace App\Http\Controllers\Bitrix24;
+<?php
 
+namespace App\Http\Controllers\Bitrix24;
+
+use App\Http\Controllers\Controller;
 use App\Models\BitrixPortal;
+use App\Models\User;
 use App\Services\Bitrix24\BitrixServiceFactory;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class PlacementController extends Controller {
+class PlacementController extends Controller
+{
     public function __invoke(
         string $placement,
         Request $request,
@@ -32,26 +36,60 @@ class PlacementController extends Controller {
         $placementOptionsRaw = $request->input('PLACEMENT_OPTIONS', '{}');
         $placementOptions    = json_decode($placementOptionsRaw, true) ?: [];
 
-        // Пример: для CRM_DEAL_DETAIL_TAB получаем ID сделки и грузим данные
+        // CRM_DEAL_DETAIL_TAB → наш placement = deal-tab
         if ($placement === 'deal-tab') {
             $dealId = $placementOptions['ID'] ?? null;
 
-            $deal = $dealId
-                ? $service->call('crm.deal.get', ['id' => $dealId])
-                : null;
+            if (!$dealId) {
+                return 'Не удалось получить ID сделки';
+            }
 
+            // 1. Получаем сделку из Bitrix
+            $dealResponse = $service->call('crm.deal.get', ['ID' => $dealId]); // ID в верхнем регистре [web:241]
+            $deal = $dealResponse['result'] ?? null;
+
+            if (!$deal || empty($deal['CONTACT_ID'])) {
+                return 'У сделки нет основного контакта';
+            }
+
+            // 2. Получаем контакт
+            $contactResponse = $service->call('crm.contact.get', ['ID' => $deal['CONTACT_ID']]);
+            $contact = $contactResponse['result'] ?? null;
+
+            if (!$contact) {
+                return 'Контакт не найден в Bitrix';
+            }
+
+            // 3. Берём email контакта
+            $email = null;
+            if (!empty($contact['EMAIL'][0]['VALUE'])) {
+                $email = $contact['EMAIL'][0]['VALUE'];
+            }
+
+            if (!$email) {
+                return 'У контакта нет e-mail, не можем сопоставить с пользователем';
+            }
+
+            // 4. Ищем пользователя и его автоматы в нашей БД
+            $user = User::where('email', $email)->first();
+
+            $machines = $user
+                ? $user->machines()
+                    ->select('id', 'name', 'location', 'balance', 'is_active')
+                    ->get()
+                : collect();
+
+            // 5. Рендерим вкладку
             return view('bitrix.placements.deal_tab', [
-                'portal'    => $portal,
-                'deal'      => $deal,
-                'options'   => $placementOptions,
+                'portal'   => $portal,
+                'deal'     => $deal,
+                'contact'  => $contact,
+                'machines' => $machines,
+                'options'  => $placementOptions,
             ]);
         }
 
-        if ($placement === 'lead-tab') {
-            // аналогично для лида
-        }
-
-        // fallback
+        // остальные placement-ы (lead-tab и т.д.)
         return view('bitrix.placements.default', [
             'portal'  => $portal,
             'options' => $placementOptions,

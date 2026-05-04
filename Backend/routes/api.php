@@ -53,7 +53,7 @@ Route::prefix('analytics')->group(function () {
 /* ********************************    BITRIX 24    ******************************** */
 /*                   LITE VERSION                 */
 use App\Http\Controllers\Bitrix24\{
-    InstallLiteController, UninstallLiteController, DashboardLiteController, 
+    InstallLiteController, UninstallLiteController, DashboardLiteController, DealTabController, PlacementController, EventController,
 };
 
 /* ---------------------------------------------- */
@@ -78,3 +78,17 @@ Route::match(['GET', 'HEAD'], '/bitrix/dashboard-lite', function (Request $reque
     return response('', 200);
 });
 Route::post('/bitrix/dashboard-lite', DashboardLiteController::class);
+
+
+
+Route::match(['GET', 'HEAD'], '/bitrix/placement/{placement}', function (Request $request) {
+    return response('', 200);
+});
+Route::post('/bitrix/placement/{placement}', PlacementController::class);
+
+
+
+Route::match(['GET', 'HEAD'], '/bitrix/events/{event}', function (Request $request) {
+    return response('', 200);
+});
+Route::post('/bitrix/events/{event}', EventController::class);

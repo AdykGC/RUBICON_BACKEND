@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Http;
 use App\Models\BitrixPortal;
-
+use Illuminate\Support\Facades\Log;
 
 class Bitrix24Service {
+    protected string $webhookUrl;
     protected BitrixPortal $portal;
     protected int $retryCount = 0;
 
@@ -49,7 +50,7 @@ class Bitrix24Service {
         $data = $response->json();
 
         if (!isset($data['access_token'], $data['refresh_token'])) {
-            \Log::error('Unable to refresh token', ['portal_id' => $this->portal->id, 'data' => $data]);
+            Log::error('Unable to refresh token', ['portal_id' => $this->portal->id, 'data' => $data]);
             throw new \Exception('Unable to refresh token');
         }
         

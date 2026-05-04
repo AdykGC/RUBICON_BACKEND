@@ -27,15 +27,3 @@ Route::post('/machine/topup', MqttCommandController::class);
 /* ********************************    BITRIX 24    ******************************** */
 Route::view('/license', 'legal.license');
 Route::view('/privacy', 'legal.privacy');
-
-
-/*                   MAIN VERSION                 */
-use App\Http\Controllers\Bitrix24\{
-    PlacementController, EventController,
-};
-
-    Route::any('/placement/{placement}', [PlacementController::class, '__invoke'])
-        ->name('bitrix.placement');
-
-    Route::post('/events/{event}', [EventController::class, '__invoke'])
-        ->name('bitrix.events');
