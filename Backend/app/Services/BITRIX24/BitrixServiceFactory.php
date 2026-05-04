@@ -1,4 +1,6 @@
-<?php namespace App\Services\Bitrix24;
+<?php
+
+namespace App\Services\Bitrix24;
 
 use App\Models\BitrixPortal;
 
