@@ -196,7 +196,7 @@
             await new Promise((resolve, reject) => {
                 BX24.callMethod('placement.bind', {
                     PLACEMENT: 'CRM_DEAL_DETAIL_TAB',
-                    HANDLER: '{{ config('app.url') }}/bitrix/placement/deal-tab'
+                    HANDLER: '{{ config('app.url') }}/api/bitrix/placement/deal-tab'
                         + '?member_id=' + encodeURIComponent(auth.member_id)
                         + '&application_token={{ $applicationTokenFromServer }}',
                     TITLE: 'Rub1c0n',
@@ -228,7 +228,7 @@
             await new Promise((resolve, reject) => {
                 BX24.callMethod('event.bind', {
                     event: 'ONCRMDEALADD',
-                    handler: '{{ config('app.url') }}/bitrix/events/crm-deal-add'
+                    handler: '{{ config('app.url') }}/api/bitrix/events/crm-deal-add'
                         + '?member_id=' + encodeURIComponent(auth.member_id)
                         + '&application_token={{ $applicationTokenFromServer }}'
                 }, function (result) {
