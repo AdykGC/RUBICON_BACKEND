@@ -18,26 +18,30 @@ class Bitrix24Service {
 
 
 
-    public function call(string $method, array $params = []) {
-        // Обновляем токен, если срок его жизни истек
-        if (!$this->portal->expires_at || $this->portal->expires_at->lte(now())) { $this->refreshToken(); }
-
-        $url = rtrim($this->portal->client_endpoint, '/') . '/' . $method . '.json';
-        $response = Http::asForm()->post($url, array_merge($params, [ 'auth' => $this->portal->access_token, ]));
-        $data = $response->json();
-
-        // Если API вернул ошибку об истекшем токене, обновляем и пробуем снова
-        if (isset($data['error']) && $data['error'] === 'expired_token') {
-            if ($this->retryCount >= 1) {
-                throw new \Exception('Too many token refresh attempts');
-            }
-            $this->retryCount++;
-            $this->refreshToken();
-            return $this->call($method, $params);
-        }
-        $this->retryCount = 0;
-        return $data;
+    public function call(string $method, array $params = [])
+{
+    if (!$this->portal->expires_at || $this->portal->expires_at->lte(now())) {
+        $this->refreshToken();
     }
+
+    $url = rtrim($this->portal->client_endpoint, '/') . '/' . $method . '.json';
+    $response = Http::asForm()->post($url, array_merge($params, [
+        'auth' => $this->portal->access_token,
+    ]));
+    $data = $response->json();
+
+    if (isset($data['error']) && $data['error'] === 'expired_token') {
+        if ($this->retryCount >= 1) {
+            throw new \Exception('Too many token refresh attempts');
+        }
+        $this->retryCount++;
+        $this->refreshToken();
+        return $this->call($method, $params);
+    }
+
+    $this->retryCount = 0;
+    return $data;
+}
 
     protected function refreshToken() {
         // Обновление токена через единый OAuth-сервер
