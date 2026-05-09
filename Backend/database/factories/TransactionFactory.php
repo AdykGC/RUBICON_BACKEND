@@ -4,23 +4,22 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<\App\Models\Transaction>
- */
 class TransactionFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'amount' => fake()->randomFloat(2, 100, 5000),
+            'amount' => $this->faker->randomFloat(2, 100, 5000),
 
-            'status' => fake()->randomElement([
+            'status' => $this->faker->randomElement([
                 'pending',
                 'completed',
                 'failed',
             ]),
 
-            'transaction_id' => strtoupper(fake()->bothify('TXN###??')),
+            'transaction_id' => strtoupper(
+                $this->faker->bothify('TXN###??')
+            ),
 
             'created_at' => now(),
             'updated_at' => now(),
