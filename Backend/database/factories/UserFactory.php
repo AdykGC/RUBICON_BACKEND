@@ -18,7 +18,7 @@ class UserFactory extends Factory
             'company_title' => $this->faker->company(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
-            'password' => Hash::make('password'),
+            'password' => Hash::make('HelloWorld1'),
             'is_active' => true,
         ];
     }
