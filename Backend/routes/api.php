@@ -53,7 +53,7 @@ Route::prefix('analytics')->group(function () {
 /* ********************************    BITRIX 24    ******************************** */
 /*                   LITE VERSION                 */
 use App\Http\Controllers\Bitrix24\{
-    InstallLiteController, UninstallLiteController, DashboardLiteController, DealTabController, PlacementController, EventController,
+    InstallLiteController, UninstallLiteController, DashboardLiteController, PlacementController, EventController,
 };
 
 /* ---------------------------------------------- */
