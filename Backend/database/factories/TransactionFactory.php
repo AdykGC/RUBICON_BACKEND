@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class TransactionFactory extends Factory {
     protected $model = Transaction::class;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
     public function definition(): array
     {
         return [
