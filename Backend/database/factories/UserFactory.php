@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as FakerFactory;
 
 class UserFactory extends Factory
 {
@@ -12,12 +13,14 @@ class UserFactory extends Factory
 
     public function definition(): array
     {
+        $faker = FakerFactory::create();
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'company_title' => fake()->company(),
-            'phone' => fake()->phoneNumber(),
-            'address' => fake()->address(),
+            'name' => $faker->name(),
+            'email' => $faker->unique()->safeEmail(),
+            'company_title' => $faker->company(),
+            'phone' => $faker->phoneNumber(),
+            'address' => $faker->address(),
             'password' => Hash::make('HelloWorld1'),
             'is_active' => true,
         ];
