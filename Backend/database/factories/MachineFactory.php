@@ -12,33 +12,33 @@ class MachineFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Автомат ' . fake()->randomNumber(3),
+            'name' => 'Автомат ' . $this->faker->randomNumber(3),
 
-            'type' => fake()->randomElement([
+            'type' => $this->faker->randomElement([
                 'Drink',
                 'Snack',
                 'Coffee',
             ]),
 
-            'location' => fake()->address(),
+            'location' => $this->faker->address(),
 
-            'mac_address' => fake()->macAddress(),
+            'mac_address' => $this->faker->macAddress(),
 
-            'connection_type' => fake()->randomElement([
+            'connection_type' => $this->faker->randomElement([
                 '4G',
                 'WiFi',
                 'Ethernet',
             ]),
 
-            'install_price' => fake()->randomFloat(2, 10000, 100000),
+            'install_price' => $this->faker->randomFloat(2, 10000, 100000),
 
-            'price_adjustment' => fake()->randomFloat(2, -10, 10),
+            'price_adjustment' => $this->faker->randomFloat(2, -10, 10),
 
-            'latitude' => fake()->latitude(),
+            'latitude' => $this->faker->latitude(),
 
-            'longitude' => fake()->longitude(),
+            'longitude' => $this->faker->longitude(),
 
-            'balance' => fake()->randomFloat(2, 0, 10000),
+            'balance' => $this->faker->randomFloat(2, 0, 10000),
 
             'is_active' => true,
         ];
