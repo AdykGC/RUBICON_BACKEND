@@ -12,17 +12,15 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'amount' => $this->faker->randomFloat(2, 100, 5000),
+            'amount' => fake()->randomFloat(2, 100, 5000),
 
-            'status' => $this->faker->randomElement([
+            'status' => fake()->randomElement([
                 'pending',
                 'completed',
                 'failed',
             ]),
 
-            'transaction_id' => strtoupper(
-                $this->faker->bothify('TXN###??')
-            ),
+            'transaction_id' => strtoupper(fake()->bothify('TXN###??')),
 
             'created_at' => now(),
             'updated_at' => now(),

@@ -13,11 +13,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'company_title' => $this->faker->company(),
-            'phone' => $this->faker->phoneNumber(),
-            'address' => $this->faker->address(),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'company_title' => fake()->company(),
+            'phone' => fake()->phoneNumber(),
+            'address' => fake()->address(),
             'password' => Hash::make('HelloWorld1'),
             'is_active' => true,
         ];
