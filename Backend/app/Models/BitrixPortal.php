@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Models;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +14,9 @@ class BitrixPortal extends Model
         'client_endpoint',
         'expires_at',
         'application_token',
+        'status',
+        'scope',
+        'uninstalled_at',
     ];
 
     protected $casts = [

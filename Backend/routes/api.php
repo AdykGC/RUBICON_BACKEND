@@ -92,3 +92,28 @@ Route::match(['GET', 'HEAD'], '/bitrix/events/{event}', function (Request $reque
     return response('', 200);
 });
 Route::post('/bitrix/events/{event}', EventController::class);
+
+
+
+/* ********************************    BITRIX 24    ******************************** */
+/*                   MAIN VERSION                 */
+use App\Http\Controllers\Bitrix24\BitrixClientL1V1\{
+    InstallController, UninstallController, 
+};
+
+/* ---------------------------------------------- */
+/*                   LITE VERSION                 */
+/* ---------------------------------------------- */
+// HEAD/GET для проверки доступности URL — отдаём 200 сразу
+Route::match(['GET', 'HEAD'], '/bitrix/install', function (Request $request) {
+    return response('', 200);
+});
+Route::post('/bitrix/install', InstallController::class);
+
+
+
+Route::match(['GET', 'HEAD'], '/bitrix/uninstall', function (Request $request) {
+    return response('', 200);
+});
+Route::post('/bitrix/uninstall', UninstallController::class);
+

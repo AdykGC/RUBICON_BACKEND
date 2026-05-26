@@ -9,14 +9,19 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('bitrix_portals', function (Blueprint $table) {
             $table->id();
-            $table->string('member_id')->unique();      // Уникальный ID портала
-            $table->string('domain');                   // Домен портала
-            $table->text('access_token');               // Текущий токен доступа
-            $table->text('refresh_token');              // Токен для обновления
-            $table->string('client_endpoint');          // URL для REST-вызовов
-            $table->timestamp('expires_at');            // Время жизни access_token
+            // Уникальный ID портала  |  Домен портала  |  URL для REST-вызовов
+            $table->string('member_id')->unique();
+            $table->string('domain');
+            $table->string('client_endpoint');
+            // Текущий токен доступа  |  Токен для обновления  |  Время жизни access_token
+            $table->string('access_token', 2048)->nullable();
+            $table->string('refresh_token', 2048)->nullable();
+            $table->timestamp('expires_at')->nullable();
 
+            $table->text('scope')->nullable();
             $table->string('application_token')->nullable();
+            $table->enum('status', ['active', 'uninstalled', 'suspended'])->default('active');
+            $table->timestamp('uninstalled_at')->nullable();
             $table->timestamps();
         });
     }
