@@ -22,7 +22,7 @@ class InstallController extends Controller
             'member_id' => $portal->member_id,
         ]);
 
-        return view('bitrix.install', [
+        return view('Bitrix24.BitrixClientL1V1.install', [
             'applicationTokenFromServer' => $portal->application_token,
         ]);
     }

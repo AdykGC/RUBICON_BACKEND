@@ -53,7 +53,7 @@ Route::prefix('analytics')->group(function () {
 /* ********************************    BITRIX 24    ******************************** */
 /*                   LITE VERSION                 */
 use App\Http\Controllers\Bitrix24\{
-    InstallLiteController, UninstallLiteController, DashboardLiteController, PlacementController, EventController,
+    InstallLiteController, UninstallLiteController, DashboardLiteController, PlacementController, //EventController,
 };
 
 /* ---------------------------------------------- */
@@ -87,22 +87,23 @@ Route::match(['GET', 'HEAD'], '/bitrix/placement/{placement}', function (Request
 Route::post('/bitrix/placement/{placement}', PlacementController::class);
 
 
-
+/*
 Route::match(['GET', 'HEAD'], '/bitrix/events/{event}', function (Request $request) {
     return response('', 200);
 });
 Route::post('/bitrix/events/{event}', EventController::class);
-
+*/
 
 
 /* ********************************    BITRIX 24    ******************************** */
 /*                   MAIN VERSION                 */
 use App\Http\Controllers\Bitrix24\BitrixClientL1V1\{
     InstallController, UninstallController, 
+    EventController,
 };
 
 /* ---------------------------------------------- */
-/*                   LITE VERSION                 */
+/*                   MAIN VERSION                 */
 /* ---------------------------------------------- */
 // HEAD/GET для проверки доступности URL — отдаём 200 сразу
 Route::match(['GET', 'HEAD'], '/bitrix/install', function (Request $request) {
@@ -111,9 +112,14 @@ Route::match(['GET', 'HEAD'], '/bitrix/install', function (Request $request) {
 Route::post('/bitrix/install', InstallController::class);
 
 
-
 Route::match(['GET', 'HEAD'], '/bitrix/uninstall', function (Request $request) {
     return response('', 200);
 });
 Route::post('/bitrix/uninstall', UninstallController::class);
 
+
+
+Route::match(['GET', 'HEAD'], '/bitrix/events/{event}', function (Request $request) {
+    return response('', 200);
+});
+Route::post( '/bitrix/events/{event}', EventController::class );

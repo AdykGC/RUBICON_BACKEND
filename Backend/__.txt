@@ -1,0 +1,308 @@
+Install/Uninstall
+
+Controller
+  ↓
+DTO
+  ↓
+Service
+  ↓
+Model
+
+
+Events
+
+Controller
+  ↓
+Job
+  ↓
+Action
+  ↓
+BitrixClient
+
+
+Placement
+
+Controller
+  ↓
+PlacementService
+  ↓
+BitrixClient
+  ↓
+View
+
+
+
+
+
+
+
+
+Bitrix
+  ↓
+HTTP Controller
+  ↓
+Queue Job
+  ↓
+Laravel Queue Worker
+  ↓
+Action
+  ↓
+BitrixClient
+  ↓
+Business Logic
+
+
+
+ЭТАП 1 — Bitrix отправляет webhook
+
+Например:
+
+POST /bitrix/events/ONCRMDEALUPDATE
+
+Payload:
+
+{
+  "event": "ONCRMDEALUPDATE",
+  "data": {
+    "FIELDS": {
+      "ID": 123
+    }
+  },
+  "auth": {
+    "member_id": "abc123"
+  }
+}
+ЭТАП 2 — EventController принимает событие
+
+Вот этот код:
+
+public function __invoke(string $event, Request $request)
+
+получает:
+
+$event = ONCRMDEALUPDATE
+весь payload.
+Что controller делает дальше
+1. Ищет портал
+$portal = BitrixPortal::where(
+    'member_id',
+    $memberId
+)->first();
+
+То есть:
+
+определяет какой Bitrix-портал прислал событие,
+получает токены и endpoint.
+2. НЕ обрабатывает событие
+
+Вот это главное изменение.
+
+Раньше controller бы:
+
+сразу ходил в Bitrix,
+тянул deal,
+синкал данные,
+делал бизнес-логику.
+
+Теперь — НЕТ.
+
+3. Controller только кладёт задачу в очередь
+ProcessBitrixEventJob::dispatch(...)
+
+Это означает:
+
+"обработать позже"
+Что реально происходит внутри Laravel
+
+Laravel создаёт запись в таблице:
+
+jobs
+
+Примерно такую:
+
+{
+  "job": "ProcessBitrixEventJob",
+  "payload": {
+    "event": "ONCRMDEALUPDATE",
+    "portalId": 5
+  }
+}
+ЭТАП 3 — Controller сразу отвечает Bitrix
+return response()->noContent();
+
+То есть:
+
+HTTP 204
+Почему это важно
+
+Bitrix НЕ любит долгие webhook responses.
+
+Если endpoint:
+
+долго думает,
+timeout,
+упал,
+500 ошибка,
+
+Bitrix:
+
+начинает retry,
+шлёт дубликаты,
+может заблокировать webhook.
+Теперь у тебя:
+Controller отвечает за 20-50ms
+
+и Bitrix счастлив.
+
+ЭТАП 4 — Queue Worker начинает обработку
+
+Вот эта команда:
+
+php artisan queue:work
+
+запускает worker.
+
+Worker берёт job из таблицы jobs
+ProcessBitrixEventJob
+
+и вызывает:
+
+handle()
+ЭТАП 5 — Job определяет тип события
+
+Вот это:
+
+match ($this->payload->event)
+
+делает routing.
+
+Например:
+
+ONCRMDEALUPDATE
+
+↓
+
+HandleDealUpdatedAction
+ЭТАП 6 — Action выполняет бизнес-логику
+
+Теперь уже action делает:
+
+$deal = $client->call(...)
+Почему это хорошо
+
+Теперь:
+
+Controller
+
+отвечает только за HTTP.
+
+Job
+
+отвечает только за async processing.
+
+Action
+
+отвечает только за бизнес-логику.
+
+BitrixClient
+
+отвечает только за REST API.
+
+Это и есть separation of concerns
+Что даёт Queue кроме “асинхронности”
+
+Вот это самое важное.
+
+1. Retry
+
+Если Bitrix API упал:
+
+throw new RuntimeException(...)
+
+Laravel:
+
+НЕ потеряет событие,
+автоматически попробует снова.
+2. Stability
+
+Даже если:
+
+Bitrix тормозит,
+CRM медленная,
+API отвечает 5 секунд,
+
+твои webhook endpoints:
+
+остаются быстрыми,
+не timeoutятся.
+3. Scalability
+
+Позже можно:
+
+php artisan queue:work --queue=bitrix
+
+запустить:
+
+2 worker,
+5 worker,
+20 worker.
+4. Isolation
+
+Если:
+
+deal sync упал
+
+то:
+
+install endpoint продолжает работать,
+uninstall тоже,
+остальные webhook'и тоже.
+Что делает BitrixClient
+Сейчас
+
+Без него:
+
+Http::post(...)
+Http::post(...)
+Http::post(...)
+
+по всему проекту.
+
+После
+
+Только:
+
+$client->call(...)
+И внутри клиента можно централизованно добавить:
+refresh token
+expired token → refresh automatically
+retry
+429 → retry
+logging
+all requests logged
+rate limiting
+sleep/retry/backoff
+В чём главный architectural shift
+Было:
+Request-driven system
+Становится:
+Event-driven integration system
+То есть:
+
+не:
+
+"controller делает всё"
+
+а:
+
+"событие проходит pipeline"
+И это уже production-grade integration pattern
+
+Именно так обычно строят:
+
+CRM integrations,
+ERP sync,
+webhook platforms,
+SaaS integrations,
+payment webhooks,
+notification systems.

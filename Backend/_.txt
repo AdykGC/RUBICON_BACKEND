@@ -1,0 +1,89 @@
+Целевая архитектура
+Bitrix24
+   │
+   ▼
+HTTP Controllers
+   │
+   ▼
+DTO / Request Normalization
+   │
+   ▼
+Integration Services
+   │
+   ├── BitrixClient
+   ├── TokenManager
+   ├── RateLimiter
+   ├── BatchExecutor
+   │
+   ▼
+Queue / Jobs
+   │
+   ▼
+Domain Actions
+   │
+   ▼
+Models / Business Logic
+
+
+
+Как разложить твой проект
+
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── Bitrix24/
+│   │       ├── InstallController.php
+│   │       ├── UninstallController.php
+│   │       ├── PlacementController.php
+│   │       ├── EventController.php
+│   │       └── DashboardController.php
+│   │
+│   └── Requests/
+│       └── Bitrix24/
+│           ├── InstallRequest.php
+│           ├── EventRequest.php
+│           └── PlacementRequest.php
+│
+├── DTO/
+│   └── Bitrix24/
+│       ├── InstallPayload.php
+│       ├── EventPayload.php
+│       └── PlacementPayload.php
+│
+├── Services/
+│   └── Bitrix24/
+│       ├── BitrixClient.php
+│       ├── BitrixTokenManager.php
+│       ├── BitrixPortalResolver.php
+│       ├── BitrixBatchService.php
+│       ├── BitrixPlacementService.php
+│       ├── BitrixEventService.php
+│       └── BitrixInstallService.php
+│
+├── Actions/
+│   └── Bitrix24/
+│       ├── HandleDealAddedAction.php
+│       ├── HandleDealUpdatedAction.php
+│       ├── HandleAppUninstallAction.php
+│       └── ResolveDealMachinesAction.php
+│
+├── Jobs/
+│   └── Bitrix24/
+│       ├── ProcessBitrixEventJob.php
+│       └── SyncDealJob.php
+│
+├── Integrations/
+│   └── Bitrix24/
+│       ├── Resources/
+│       │   ├── DealResource.php
+│       │   ├── ContactResource.php
+│       │   └── CompanyResource.php
+│       │
+│       ├── Mappers/
+│       │   ├── DealMapper.php
+│       │   └── ContactMapper.php
+│       │
+│       └── Exceptions/
+│           ├── BitrixApiException.php
+│           ├── BitrixRateLimitException.php
+│           └── BitrixUnauthorizedException.php
