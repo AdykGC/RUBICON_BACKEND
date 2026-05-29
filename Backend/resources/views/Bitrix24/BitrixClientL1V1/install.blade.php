@@ -2,11 +2,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Rub1c0n Install Wizard</title>
+    <title>Rub1c0n Install</title>
     <script src="https://api.bitrix24.com/api/v1/"></script>
+
     <style>
         body { font-family: Arial; padding: 20px; }
-        .step { margin: 10px 0; }
         .ok { color: green; }
         .err { color: red; }
         .log { background: #111; color: #0f0; padding: 10px; height: 200px; overflow: auto; }
@@ -14,141 +14,62 @@
 </head>
 <body>
 
-<h2>Install Rub1c0n</h2>
+<h2>Rub1c0n Installation</h2>
 
 <div id="log" class="log"></div>
 
-<div id="steps">
-    <div id="s1">1. Auth</div>
-    <div id="s2">2. Placement bind</div>
-    <div id="s3">3. Event bind</div>
-    <div id="s4">4. Test event</div>
-    <div id="s5">5. Finish</div>
-</div>
+<div id="s1">1. Check portal</div>
+<div id="s2">2. Install status</div>
+<div id="s3">3. Finish</div>
 
 <script>
 function log(msg) {
-    const el = document.getElementById('log');
-    el.innerHTML += msg + "<br>";
-    el.scrollTop = el.scrollHeight;
+    document.getElementById('log').innerHTML += msg + "<br>";
 }
 
 function ok(id, text) {
-    document.getElementById(id).innerHTML = "✔ " + text;
-    document.getElementById(id).className = "ok";
+    const el = document.getElementById(id);
+    el.innerHTML = "✔ " + text;
+    el.className = "ok";
 }
 
 function err(id, text) {
-    document.getElementById(id).innerHTML = "✖ " + text;
-    document.getElementById(id).className = "err";
+    const el = document.getElementById(id);
+    el.innerHTML = "✖ " + text;
+    el.className = "err";
 }
 
-BX24.init(async function () {
+BX24.init(function () {
+
+    BX24.fitWindow();
 
     try {
-
-        BX24.fitWindow();
-
-        // =========================
-        // 1. AUTH
-        // =========================
+        // 1. Только читаем контекст Bitrix (для логов/отладки)
         const auth = BX24.getAuth();
-        log("AUTH: " + JSON.stringify(auth));
-        ok("s1", "Auth OK");
+        log("Portal: " + auth.domain);
+        ok("s1", "Portal OK");
 
-        const memberId = auth.member_id;
+        // 2. ВАЖНО:
+        // Install УЖЕ произошёл на backend (/api/bitrix/install)
+        // здесь мы НЕ сохраняем ничего
 
-        // =========================
-        // 2. PLACEMENT
-        // =========================
-        await new Promise((resolve, reject) => {
+        ok("s2", "Already installed on server");
+        log("Backend already processed install event");
 
-            BX24.callMethod("placement.bind", {
-                PLACEMENT: "CRM_DEAL_DETAIL_TAB",
-                TITLE: "Rub1c0n",
-                HANDLER: "{{ config('app.url') }}/api/bitrix/placement/deal-tab?member_id=" + memberId,
-            }, function(res) {
+        // 3. Финализация UI
+        BX24.installFinish();
+        ok("s3", "Finished");
 
-                if (res.error()) {
-                    log("placement error: " + res.error());
-                    err("s2", "Placement failed");
-                    return reject(res.error());
-                }
+        log("INSTALL COMPLETE");
 
-                log("placement OK");
-                ok("s2", "Placement OK");
-                resolve();
-            });
-        });
-
-        // =========================
-        // 3. EVENT BIND
-        // =========================
-        await new Promise((resolve, reject) => {
-
-            BX24.callMethod("event.bind", {
-                event: "ONCRMDEALADD",
-                handler: "{{ config('app.url') }}/api/bitrix/events/ONCRMDEALADD?member_id=" + memberId,
-            }, function(res) {
-
-                if (res.error()) {
-                    log("event error: " + res.error());
-                    err("s3", "Event bind failed");
-                    return reject(res.error());
-                }
-
-                log("event OK");
-                ok("s3", "Event OK");
-                resolve();
-            });
-        });
-
-        // =========================
-        // 4. TEST EVENT (ВАЖНО)
-        // =========================
-        log("Trigger test event...");
-
-        // создаём тестовую сделку чтобы проверить pipeline
-        BX24.callMethod("crm.deal.add", {
-            fields: {
-                TITLE: "TEST INSTALL DEAL",
-                OPPORTUNITY: 1000
-            }
-        }, function(res) {
-
-            if (res.error()) {
-                log("test deal error: " + res.error());
-                err("s4", "Test event failed");
-                return;
-            }
-
-            log("Test deal created: " + JSON.stringify(res.data()));
-            ok("s4", "Event pipeline triggered");
-
-            setTimeout(() => {
-                log("Check Laravel logs + queue worker");
-            }, 2000);
-        });
-
-        // =========================
-        // 5. FINISH
-        // =========================
         setTimeout(() => {
-
-            BX24.installFinish();
-            ok("s5", "Installed");
-
-            log("INSTALL COMPLETE");
-
-            setTimeout(() => {
-                try { BX24.closeApplication(); } catch(e) {}
-            }, 1500);
-
-        }, 3000);
+            try { BX24.closeApplication(); } catch(e) {}
+        }, 1200);
 
     } catch (e) {
-        log("ERROR: " + e);
         console.error(e);
+        err("s2", "Error");
+        log("ERROR: " + e);
     }
 });
 </script>
