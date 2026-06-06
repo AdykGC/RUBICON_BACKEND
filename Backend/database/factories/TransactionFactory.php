@@ -13,6 +13,7 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         $faker = FakerFactory::create();
+        $createdAt = $faker->dateTimeBetween('-1 year', 'now');
 
         return [
             'amount' => $faker->randomFloat(2, 100, 5000),
@@ -25,8 +26,8 @@ class TransactionFactory extends Factory
 
             'transaction_id' => strtoupper($faker->bothify('TXN###??')),
 
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => $createdAt,
+            'updated_at' => $faker->dateTimeBetween($createdAt, 'now'),
         ];
     }
 }
