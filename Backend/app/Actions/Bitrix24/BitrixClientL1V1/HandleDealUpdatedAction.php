@@ -13,7 +13,7 @@ class HandleDealUpdatedAction
     {
         $portal = BitrixPortal::find($payload->portalId);
         if (!$portal) { 
-            Log::warning(...); 
+            Log::warning('bitrix.deal_update.portal_not_found', [ 'portal_id' => $payload->portalId, ]);
             return; 
         }
 

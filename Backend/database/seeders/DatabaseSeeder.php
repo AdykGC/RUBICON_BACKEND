@@ -11,13 +11,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory(10)
-            ->has(
-                Machine::factory(3)
-                    ->has(
-                        Transaction::factory(5)
-                    )
-            )
-            ->create();
+        User::factory(10)->create()->each(function ($user) {
+
+            Machine::factory(3)->create([
+                'user_id' => $user->id,
+            ])->each(function ($machine) {
+
+                Transaction::factory(5)->create([
+                    'machine_id' => $machine->id,
+                ]);
+
+            });
+
+        });
     }
 }
