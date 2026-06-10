@@ -3,6 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Builder</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -45,11 +48,12 @@
 
         .app-content {
             flex: 1;
+            overflow: hidden;
         }
 
         .workflow-layout {
             display: flex;
-            height: 100vh;
+            height: 100%;
         }
 
         .workflow-sidebar {
@@ -61,8 +65,9 @@
 
         .workflow-canvas {
             flex: 1;
+            position: relative;
+            overflow: auto;
             background: #f8fafc;
-            padding: 30px;
         }
 
         .workflow-properties {
@@ -85,13 +90,19 @@
             padding: 16px;
             background: white;
             border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            cursor: pointer;
+            user-select: none;
         }
 
+        /* Событие */
+
+        .trigger,
         .start {
             border-left: 5px solid #2563eb;
         }
+
+        /* Действие */
 
         .action {
             border-left: 5px solid #16a34a;
@@ -105,20 +116,46 @@
             padding: 10px;
         }
     </style>
+
+    @stack('styles')
 </head>
 
 <body>
 
-    <div class="app-layout">
+<div class="app-layout">
 
-        @include('Bitrix24.BitrixClientL1V1.partials.sidebar')
+    @include('Bitrix24.BitrixClientL1V1.partials.sidebar')
 
-        <main class="app-content">
-            @yield('content')
-        </main>
+    <main class="app-content">
+        @yield('content')
+    </main>
 
-    </div>
+</div>
+
+<script>
+    window.workflow = @json($workflow ?? []);
+
+    console.log('Workflow:', window.workflow);
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        document.querySelectorAll('.node').forEach(node => {
+
+            node.addEventListener('click', () => {
+
+                console.log(
+                    'Node selected:',
+                    node.dataset.id
+                );
+
+            });
+
+        });
+
+    });
+</script>
+
+@stack('scripts')
 
 </body>
-
 </html>
