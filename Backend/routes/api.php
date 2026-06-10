@@ -73,12 +73,12 @@ Route::match(['GET', 'HEAD'], '/bitrix/uninstall-lite', function (Request $reque
 Route::post('/bitrix/uninstall-lite', UninstallLiteController::class);
 
 
-
+/*
 Route::match(['GET', 'HEAD'], '/bitrix/dashboard-lite', function (Request $request) {
     return response('', 200);
 });
 Route::post('/bitrix/dashboard-lite', DashboardLiteController::class);
-
+*/
 
 
 Route::match(['GET', 'HEAD'], '/bitrix/placement/{placement}', function (Request $request) {
@@ -99,27 +99,24 @@ Route::post('/bitrix/events/{event}', EventController::class);
 /*                   MAIN VERSION                 */
 use App\Http\Controllers\Bitrix24\BitrixClientL1V1\{
     InstallController, UninstallController, 
-    EventController,
+    EventController, DashboardLiteController,
 };
 
 /* ---------------------------------------------- */
 /*                   MAIN VERSION                 */
 /* ---------------------------------------------- */
 // HEAD/GET для проверки доступности URL — отдаём 200 сразу
-Route::match(['GET', 'HEAD'], '/bitrix/install', function (Request $request) {
-    return response('', 200);
-});
+Route::match(['GET', 'HEAD'], '/bitrix/install', function (Request $request) { return response('', 200); });
 Route::post('/bitrix/install', InstallController::class);
 
 
-Route::match(['GET', 'HEAD'], '/bitrix/uninstall', function (Request $request) {
-    return response('', 200);
-});
+Route::match(['GET', 'HEAD'], '/bitrix/uninstall', function (Request $request) { return response('', 200); });
 Route::post('/bitrix/uninstall', UninstallController::class);
 
 
-
-Route::match(['GET', 'HEAD'], '/bitrix/events/{event}', function (Request $request) {
-    return response('', 200);
-});
+Route::match(['GET', 'HEAD'], '/bitrix/events/{event}', function (Request $request) { return response('', 200); });
 Route::post( '/bitrix/events/{event}', EventController::class );
+
+
+Route::match(['GET', 'HEAD'], '/bitrix/dashboard-lite', function (Request $request) { return response('', 200); });
+Route::post('/bitrix/dashboard-lite', DashboardLiteController::class);
