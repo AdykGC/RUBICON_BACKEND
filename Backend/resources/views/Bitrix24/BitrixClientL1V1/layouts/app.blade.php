@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ asset('css/Bitrix24/BitrixClientL1V1/app.css') }}" >
+    <link rel="stylesheet" href="css/Bitrix24/BitrixClientL1V1/app.css" >
 </head>
 <body>
 
