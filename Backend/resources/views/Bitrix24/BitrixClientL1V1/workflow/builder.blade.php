@@ -3,46 +3,54 @@
 @section('content')
 
 <div class="workflow-layout">
-    <!--
-    <aside class="workflow-sidebar">
-        <h3>События</h3>
-        <div class="node-item"> Лид создан </div>
-        <div class="node-item"> Сделка создана </div>
-        <div class="node-item"> Оплата получена </div>
-        <h3>Действия</h3>
-        <div class="node-item"> Создать задачу </div>
-        <div class="node-item"> Отправить уведомление </div>
-    </aside>
--->
 
-
-
-    <section class="workflow-canvas">
-        @foreach($workflow as $node)
-        <div class="node {{ $node['type'] }}"
-            data-id="{{ $node['id'] }}"
-            style=" position:absolute;
-                    left:{{ $node['x'] }}px;
-                    top:{{ $node['y'] }}px;
-                ">
-            #{{ $node['id'] }} <br> {{ $node['name'] }}
-        </div>
-
-        @endforeach
-
+    <section
+        id="drawflow"
+        class="workflow-canvas">
     </section>
 
-
-
-    <!--
-    <aside class="workflow-properties">
-        <h3>Настройки блока</h3>
-        <label> Название </label>
-        <input type="text" value="Создать задачу" >
-        <label> Ответственный </label>
-        <select> <option> Менеджер </option> </select>
-    </aside>
--->
 </div>
 
 @endsection
+
+@push('scripts')
+
+@push('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const editor = new Drawflow(
+        document.getElementById('drawflow')
+    );
+
+    editor.start();
+
+    window.workflow.forEach(node => {
+
+        editor.addNode(
+            node.type,      // имя
+            1,              // inputs
+            1,              // outputs
+            node.x,
+            node.y,
+            node.type,      // css class
+            {
+                id: node.id,
+                name: node.name
+            },
+            `
+                <div style="padding:10px;">
+                    <strong>${node.name}</strong>
+                </div>
+            `
+        );
+
+    });
+
+});
+
+</script>
+
+@endpush
