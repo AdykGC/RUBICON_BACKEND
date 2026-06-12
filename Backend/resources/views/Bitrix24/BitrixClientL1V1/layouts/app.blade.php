@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/drawflow/dist/drawflow.min.css">
         <script src="https://cdn.jsdelivr.net/npm/drawflow/dist/drawflow.min.js"></script>
         <!-- Vite -->
-        <link rel="stylesheet" href="{{ asset('css/Bitrix24/BitrixClientL1V1/app.css') }}">
+        <link rel="stylesheet" href="/css/Bitrix24/BitrixClientL1V1/app.css">
     </head>
 
 
@@ -25,7 +25,7 @@
         </div>
 
 
-        <script type="module" src="{{ asset('js/Bitrix24/BitrixClientL1V1/Workflow/app.js') }}"> </script>
+        <script type="module" src="/js/Bitrix24/BitrixClientL1V1/Workflow/app.js"></script>
         @stack('scripts')
     </body>
 
