@@ -9,16 +9,16 @@
     </nav>
 -->
     
-    <button class="btn btn-trigger" onclick="window.app && app.addNodeFromTemplate('trigger_lead')">
+    <button class="btn btn-trigger" onclick="window.workflowEditor && workflowEditor.addNodeFromTemplate('trigger_lead')">
         <span>🔔</span> Триггер (Лид создан)
     </button>
-    <button class="btn btn-trigger" onclick="window.app && app.addNodeFromTemplate('trigger_lead')">
+    <button class="btn btn-action" onclick="window.workflowEditor && workflowEditor.addNodeFromTemplate('action_task')">
         <span>⚙️</span> Действие (Создать задачу)
     </button>
-    <button class="btn btn-export" onclick="app.exportWorkflow()">
+    <button class="btn btn-export" onclick="window.workflowEditor && workflowEditor.exportWorkflow()">
         <span>📦</span> Экспорт JSON
     </button>
-    <button class="btn btn-run" id="runButton" onclick="app.runWorkflow()">
+    <button class="btn btn-run" id="runButton" onclick="window.workflowEditor && workflowEditor.runWorkflow()">
         ▶ Выполнить workflow
     </button>
     <div class="log-panel" id="logPanel">

@@ -51,6 +51,12 @@ export class WorkflowEditor {
         this.engine.start();
     }
 
+    exportWorkflow() {
+        const data = this.editor.export();
+        console.log("📦 EXPORT:", data);
+        return data;
+    }
+
     bindUI() {}
 
     log(msg) {
