@@ -166,6 +166,22 @@ html, body {
     background-size: 32px 32px;
 }
 
+.workflow-layout {
+    display: flex;
+    height: 100%;
+}
+
+.workflow-canvas {
+    flex: 1;
+    position: relative;
+    /* скопируй сюда background с сеткой, если нужен */
+    background: #ffffff;
+    background-image: 
+        linear-gradient(#f1f5f9 1px, transparent 1px),
+        linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
 /* ========== УЗЛЫ ========== */
 
         .drawflow .drawflow-node {
