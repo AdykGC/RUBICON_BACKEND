@@ -15,7 +15,6 @@
         <script src="https://cdn.jsdelivr.net/npm/drawflow/dist/drawflow.min.js"></script>
         <!-- Vite -->
         <link rel="stylesheet" href="{{ asset('css/Bitrix24/BitrixClientL1V1/app.css') }}">
-        @vite(['resources/css/Bitrix24/BitrixClientL1V1/app.css', 'resources/js/Bitrix24/BitrixClientL1V1/Workflow/app.js'])
     </head>
 
 
